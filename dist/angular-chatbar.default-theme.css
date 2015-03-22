@@ -5,34 +5,31 @@
   right: 1.5em;
   max-width: calc(100% - 1.5em - 1.5em);
   text-align: right;
+/*this is to keep a default visual header similar to minimized*/
 }
-
 .jlo-chatbar__chat {
   font-size: 1.2em;
   text-align: left;
   width: 20em; /*width of chat elt*/
-  height: 2.5em; /*height of chat elt*/
+  height: 2.5em;
   margin: 0 0.4em; /*separation of chat elt*/
-  margin-top: -2.5em; /*height of chat elt*/
+  margin-top: -2.5em;
   line-height: normal;
 }
-
 .jlo-chatbar__minimized {
   line-height: 2.5em; /*height of chat elt*/
-  background-color: grey;
-  padding: 0 .8em;
+  background-color: #808080;
+  padding: 0 0.8em;
   cursor: pointer;
-  color: white;
+  color: #fff;
 }
-
 .jlo-chatbar__open {
   min-height: 15em;
   height: 25em;
-  background-color: white;
-  color: white;
-  border: 1px solid grey;
+  background-color: #fff;
+  color: #fff;
+  border: 25em solid #808080;
 }
-
 .jlo-chatbar__resizer {
   position: absolute;
   top: -2px;
@@ -40,12 +37,9 @@
   height: 4px;
   cursor: ns-resize;
 }
-
-
-/*this is to keep a default visual header similar to minimized*/
 .jlo-chatbar__open {
   line-height: 2.5em;
-  padding: 0 calc(.8em - 1px);
+  padding: 0 calc(0.8em - 25em);
 }
 .jlo-chatbar__open:before {
   content: '';
@@ -53,8 +47,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: grey;
-  height: 2.5em; /*height of chat elt*/
+  background-color: #808080;
+  height: 2.5em;
   z-index: -1;
 }
-

@@ -1,0 +1,63 @@
+@require './chatbar.default-theme.vars';
+@require 'nib';
+
+.jlo-chatbar {
+	font-size: 0.75rem;
+	position: absolute;
+	bottom: 0px;
+	right: $chatbar-sides-margin;
+	max-width: "calc(100% - %s - %s)" % ($chatbar-sides-margin $chatbar-sides-margin);
+	text-align: right;
+
+	&__chat {
+		font-size: $chat-font-size;
+		text-align: left;
+		width: $chat-width; /*width of chat elt*/
+		height: $chat-minimized-height;
+		margin: 0 $chat-sides-margin; /*separation of chat elt*/
+		margin-top: - $chat-minimized-height;
+		line-height: normal;
+	}
+
+	&__minimized {
+		line-height: $chat-minimized-height; /*height of chat elt*/
+		background-color: $chat-background-color;
+		padding: 0 $chat-padding-sides;
+		cursor: pointer;
+		color: white;
+	}
+
+	&__open {
+		min-height: $chat-open-min-height;
+		height: $chat-open-height;
+		background-color: white;
+		color: white;
+		border: $chat-border-width solid $chat-border-color;
+	}
+
+	&__resizer {
+		position: absolute;
+		top: - ($chat-resizer-height / 2);
+		left: 0;
+		height: $chat-resizer-height;
+		cursor: ns-resize;
+	}
+
+	/*this is to keep a default visual header similar to minimized*/
+	&__open {
+		line-height: $chat-minimized-height;
+		padding: 0 ("calc(%s - %s)" % ($chat-padding-sides $chat-border-width));
+		
+		&:before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: $chat-background-color;
+			height: $chat-minimized-height;
+			z-index: -1;
+		}
+	}
+}
+

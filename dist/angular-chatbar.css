@@ -1,51 +1,52 @@
 .jlo-chatbar {
   display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   height: 0px;
   line-height: 10000px; /*so that hidden open panel does not show over visible chat */
 }
-
 .jlo-chatbar__chat {
   position: relative;
-  
   display: inline-block;
   vertical-align: top;
 }
-
 .jlo-chatbar__minimized,
 .jlo-chatbar__open {
   position: absolute;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   bottom: 0;
   left: 0;
   width: 100%;
 }
-
 .jlo-chatbar__minimized {
   display: block;
 }
 .jlo-chatbar__open {
   display: none;
-  -webkit-transform: translateZ(0); /*to fix a redraw issue in firefox*/
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0); /*to fix a redraw issue in firefox*/
 }
-
 .jlo-chatbar__chat--open .jlo-chatbar__open {
   display: block;
 }
 .jlo-chatbar__chat--open .jlo-chatbar__minimized {
   display: none;
 }
-
 .jlo-chatbar__resizer {
   width: 100%;
   height: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-
 .jlo-chatbar-noselect {
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;

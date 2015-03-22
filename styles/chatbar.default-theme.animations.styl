@@ -1,0 +1,110 @@
+@require './chatbar.default-theme.vars';
+@require './chatbar.default-theme.animations.vars';
+@require 'nib';
+
+.jlo-chatbar__chat {
+	&--open {
+		&-add,
+		&-remove,
+		&.ng-move {
+			transition: all $open-close-animation-time;
+		}
+		&.ng-enter,
+		&.ng-leave {
+			transition: all ($enter-leave-animation-delay + $enter-leave-animation-time + $open-close-animation-time);
+		}
+
+		&-add .jlo-chatbar__open,
+		&-remove .jlo-chatbar__open,
+		&.ng-enter,
+		&.ng-leave {
+			display: inline-block;
+		}
+	}
+	
+	&--open {
+		&-add,
+		&-remove,
+		&.ng-move {
+			.jlo-chatbar__open {
+				transition: all $open-close-animation-time linear;
+			}
+		}
+		&.ng-enter {
+			.jlo-chatbar__open {
+				transition:
+					height $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
+					min-height $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
+					border-width 1ms linear ($enter-leave-animation-delay + $enter-leave-animation-time),
+					opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
+			}
+		}
+		&.ng-leave {
+			.jlo-chatbar__open {
+				transition:
+					height $open-close-animation-time linear,
+					min-height $open-close-animation-time linear,
+					border-width 1ms linear $open-close-animation-time,
+					opacity $enter-leave-animation-time linear $open-close-animation-time;
+			}
+		}
+	}
+	
+	&--open {
+		&-add:not(&-add-active),
+		&-remove&-remove-active {
+			.jlo-chatbar__open {
+				height: $chat-minimized-height!important;
+				min-height: 0!important;
+			}
+		}
+		
+		&.ng-move:not(.ng-move-active) {
+			.jlo-chatbar__open:not(.jlo-chatbar__open--visible) {				
+				height: $chat-minimized-height!important;
+				min-height: 0!important;
+			}
+		}
+		&.ng-enter:not(.ng-enter-active),
+		&.ng-leave.ng-leave-active {
+			.jlo-chatbar__open {
+				height: $chat-minimized-height!important;
+				min-height: 0!important;
+				border-width: 0px!important;
+				opacity: 0;
+			}
+		}
+		
+		&-add&-add-active,
+		&-remove:not(&-remove-active),
+		&.ng-move.ng-move-active {
+			.jlo-chatbar__open {
+				height: $chat-minimized-height;
+			}
+		}
+		&.ng-enter.ng-enter-active,
+		&.ng-leave:not(.ng-leave-active) {
+			.jlo-chatbar__open {
+				height: $chat-minimized-height;
+				opacity: 1;
+			}
+		}
+	}
+	
+	&:not(&--open).ng-leave {
+		transition: height $open-close-animation-time, opacity $enter-leave-animation-time linear;
+	}
+	&:not(&--open).ng-enter {
+		transition: height $open-close-animation-time, opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
+	}
+	
+	&:not(&--open).ng-enter:not(.ng-enter-active),
+	&:not(&--open).ng-leave.ng-leave-active {
+		opacity: 0;
+	}
+	
+	&:not(&--open).ng-enter.ng-enter-active,
+	&:not(&--open).ng-leave:not(.ng-leave-active) {
+		opacity: 1;
+	}
+}
