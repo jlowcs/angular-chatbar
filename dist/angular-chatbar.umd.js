@@ -1,4 +1,24 @@
 (function (factory) {
+  if (typeof define === "function" && define.amd) {
+    define("angular-chatbar/_module", ["exports"], factory);
+  } else if (typeof exports !== "undefined") {
+    factory(exports);
+  }
+})(function (exports) {
+  "use strict";
+
+  exports["default"] = angular.module("jlo-chatbar", []);
+});
+(function (factory) {
+  if (typeof define === "function" && define.amd) {
+    define("angular-chatbar", ["exports", "angular-chatbar/chatbar"], factory);
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require("angular-chatbar/chatbar"));
+  }
+})(function (exports, _angularChatbarChatbar) {
+  "use strict";
+});
+(function (factory) {
 	if (typeof define === "function" && define.amd) {
 		define("angular-chatbar/chatbar.directive", ["exports", "./_module", "./chatbar.service", "./utils"], factory);
 	} else if (typeof exports !== "undefined") {
@@ -118,15 +138,6 @@
 			}
 		};
 	});
-});
-(function (factory) {
-  if (typeof define === "function" && define.amd) {
-    define("angular-chatbar", ["exports", "angular-chatbar/chatbar"], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require("angular-chatbar/chatbar"));
-  }
-})(function (exports, _angularChatbarChatbar) {
-  "use strict";
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
@@ -374,15 +385,4 @@
 
 	exports.applyHeight = applyHeight;
 	exports.initResizer = initResizer;
-});
-(function (factory) {
-  if (typeof define === "function" && define.amd) {
-    define("angular-chatbar/_module", ["exports"], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(exports);
-  }
-})(function (exports) {
-  "use strict";
-
-  exports["default"] = angular.module("jlo-chatbar", []);
 });

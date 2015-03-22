@@ -4,6 +4,9 @@ var concat = require('gulp-concat');
 var merge = require('merge-stream');
 var stylus = require('gulp-stylus');
 var rename = require("gulp-rename");
+var uglify = require("gulp-uglify");
+var cssmin = require("gulp-cssmin");
+var ngAnnotate = require('gulp-ng-annotate');
 var nib = require("nib");
 
 gulp.task('default', function() {
@@ -21,24 +24,29 @@ gulp.task('default', function() {
 		}))
 	;
 
-	var js = merge(othersUmd, mainUmd)
+	var streams = [];
+
+	streams.push(
+		merge(othersUmd, mainUmd)
 		.pipe(concat('angular-chatbar.umd.js'))
-		.pipe(gulp.dest('dist'));
+		.pipe(gulp.dest('dist'))
+        .pipe(ngAnnotate())
+    	.pipe(uglify())
+		.pipe(rename('angular-chatbar.umd.min.js'))
+		.pipe(gulp.dest('dist'))
+	);
 
-	var css = gulp.src('styles/chatbar.styl')
-	    .pipe(stylus({use: nib()}))
-	    .pipe(rename('angular-chatbar.css'))
-	    .pipe(gulp.dest('dist'));
+	['chatbar', 'chatbar.default-theme', 'chatbar.default-theme.animations'].forEach(function (name) {
+		streams.push(
+			gulp.src('styles/' + name + '.styl')
+		    .pipe(stylus({use: nib()}))
+		    .pipe(rename('angular-' + name + '.css'))
+		    .pipe(gulp.dest('dist'))
+		    .pipe(cssmin())
+			.pipe(rename('angular-' + name + '.min.css'))
+			.pipe(gulp.dest('dist'))
+		);
+	});
 
-	var cssTheme = gulp.src('styles/chatbar.default-theme.styl')
-	    .pipe(stylus({use: nib()}))
-	    .pipe(rename('angular-chatbar.default-theme.css'))
-	    .pipe(gulp.dest('dist'));
-
-	var cssThemeAnim = gulp.src('styles/chatbar.default-theme.animations.styl')
-	    .pipe(stylus({use: nib()}))
-	    .pipe(rename('angular-chatbar.default-theme.animations.css'))
-	    .pipe(gulp.dest('dist'));
-
-	return merge(js, css, cssTheme, cssThemeAnim);
+	return merge.apply(null, streams);
 });
