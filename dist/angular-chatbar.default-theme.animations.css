@@ -15,11 +15,24 @@
   -ms-transition: all 400ms;
   transition: all 400ms;
 }
-.jlo-chatbar__chat--open-add .jlo-chatbar__open,
-.jlo-chatbar__chat--open-remove .jlo-chatbar__open,
+.jlo-chatbar__chat--open-add,
+.jlo-chatbar__chat--open-remove,
 .jlo-chatbar__chat--open.ng-enter,
 .jlo-chatbar__chat--open.ng-leave {
-  display: inline-block;
+  min-height: 15em !important;
+}
+.jlo-chatbar__chat--open-add .jlo-chatbar__open,
+.jlo-chatbar__chat--open-remove .jlo-chatbar__open,
+.jlo-chatbar__chat--open.ng-enter .jlo-chatbar__open,
+.jlo-chatbar__chat--open.ng-leave .jlo-chatbar__open {
+  display: inline-block !important;
+  overflow: hidden !important;
+}
+.jlo-chatbar__chat--open-add .jlo-chatbar__minimized,
+.jlo-chatbar__chat--open-remove .jlo-chatbar__minimized,
+.jlo-chatbar__chat--open.ng-enter .jlo-chatbar__minimized,
+.jlo-chatbar__chat--open.ng-leave .jlo-chatbar__minimized {
+  display: none !important;
 }
 .jlo-chatbar__chat--open-add .jlo-chatbar__open,
 .jlo-chatbar__chat--open-remove .jlo-chatbar__open,
@@ -31,32 +44,29 @@
   transition: all 200ms linear;
 }
 .jlo-chatbar__chat--open.ng-enter .jlo-chatbar__open {
-  -webkit-transition: height 200ms linear 200ms, min-height 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
-  -moz-transition: height 200ms linear 200ms, min-height 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
-  -o-transition: height 200ms linear 200ms, min-height 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
-  -ms-transition: height 200ms linear 200ms, min-height 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
-  transition: height 200ms linear 200ms, min-height 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
+  -webkit-transition: bottom 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
+  -moz-transition: bottom 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
+  -o-transition: bottom 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
+  -ms-transition: bottom 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
+  transition: bottom 200ms linear 200ms, border-width 1ms linear 200ms, opacity 100ms linear 100ms;
 }
 .jlo-chatbar__chat--open.ng-leave .jlo-chatbar__open {
-  -webkit-transition: height 200ms linear, min-height 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
-  -moz-transition: height 200ms linear, min-height 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
-  -o-transition: height 200ms linear, min-height 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
-  -ms-transition: height 200ms linear, min-height 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
-  transition: height 200ms linear, min-height 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
+  -webkit-transition: bottom 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
+  -moz-transition: bottom 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
+  -o-transition: bottom 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
+  -ms-transition: bottom 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
+  transition: bottom 200ms linear, border-width 1ms linear 200ms, opacity 100ms linear 200ms;
 }
 .jlo-chatbar__chat--open-add:not(.jlo-chatbar__chat--open-add-active) .jlo-chatbar__open,
 .jlo-chatbar__chat--open-remove.jlo-chatbar__chat--open-remove-active .jlo-chatbar__open {
-  height: 2.5em !important;
-  min-height: 0 !important;
+  bottom: calc(-100% + 2.5em) !important;
 }
 .jlo-chatbar__chat--open.ng-move:not(.ng-move-active) .jlo-chatbar__open:not(.jlo-chatbar__open--visible) {
-  height: 2.5em !important;
-  min-height: 0 !important;
+  bottom: calc(-100% + 2.5em) !important;
 }
 .jlo-chatbar__chat--open.ng-enter:not(.ng-enter-active) .jlo-chatbar__open,
 .jlo-chatbar__chat--open.ng-leave.ng-leave-active .jlo-chatbar__open {
-  height: 2.5em !important;
-  min-height: 0 !important;
+  bottom: calc(-100% + 2.5em) !important;
   border-width: 0px !important;
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
@@ -65,28 +75,28 @@
 .jlo-chatbar__chat--open-add.jlo-chatbar__chat--open-add-active .jlo-chatbar__open,
 .jlo-chatbar__chat--open-remove:not(.jlo-chatbar__chat--open-remove-active) .jlo-chatbar__open,
 .jlo-chatbar__chat--open.ng-move.ng-move-active .jlo-chatbar__open {
-  height: 2.5em;
+  bottom: 0 !important;
 }
 .jlo-chatbar__chat--open.ng-enter.ng-enter-active .jlo-chatbar__open,
 .jlo-chatbar__chat--open.ng-leave:not(.ng-leave-active) .jlo-chatbar__open {
-  height: 2.5em;
+  bottom: 0 !important;
   opacity: 1;
   -ms-filter: none;
   filter: none;
 }
 .jlo-chatbar__chat:not(.jlo-chatbar__chat--open).ng-leave {
-  -webkit-transition: height 200ms, opacity 100ms linear;
-  -moz-transition: height 200ms, opacity 100ms linear;
-  -o-transition: height 200ms, opacity 100ms linear;
-  -ms-transition: height 200ms, opacity 100ms linear;
-  transition: height 200ms, opacity 100ms linear;
+  -webkit-transition: bottom 200ms, opacity 100ms linear;
+  -moz-transition: bottom 200ms, opacity 100ms linear;
+  -o-transition: bottom 200ms, opacity 100ms linear;
+  -ms-transition: bottom 200ms, opacity 100ms linear;
+  transition: bottom 200ms, opacity 100ms linear;
 }
 .jlo-chatbar__chat:not(.jlo-chatbar__chat--open).ng-enter {
-  -webkit-transition: height 200ms, opacity 100ms linear 100ms;
-  -moz-transition: height 200ms, opacity 100ms linear 100ms;
-  -o-transition: height 200ms, opacity 100ms linear 100ms;
-  -ms-transition: height 200ms, opacity 100ms linear 100ms;
-  transition: height 200ms, opacity 100ms linear 100ms;
+  -webkit-transition: bottom 200ms, opacity 100ms linear 100ms;
+  -moz-transition: bottom 200ms, opacity 100ms linear 100ms;
+  -o-transition: bottom 200ms, opacity 100ms linear 100ms;
+  -ms-transition: bottom 200ms, opacity 100ms linear 100ms;
+  transition: bottom 200ms, opacity 100ms linear 100ms;
 }
 .jlo-chatbar__chat:not(.jlo-chatbar__chat--open).ng-enter:not(.ng-enter-active),
 .jlo-chatbar__chat:not(.jlo-chatbar__chat--open).ng-leave.ng-leave-active {

@@ -18,8 +18,9 @@ ngModule.directive('jloChatbar', function() {
 			this.chatVarName = $attrs.chat;
 			this.ctrlVarName = $attrs.ctrl;
 			
-			this.open = function (chat) {
+			this.open = function (chat, focus) {
 				chat.opened = true;
+				focus && jloChatbar.focusChat(chat.data);
 			};
 			
 			this.minimize = function (chat) {
@@ -39,7 +40,7 @@ ngModule.directive('jloChatbar', function() {
 						maxHeight: serviceData.maxHeight && serviceData.maxHeight(windowHeight),
 						height: serviceData.height && serviceData.height(windowHeight)
 					};
-					applyHeight($element.find('jlo-chatbar-open'), _this.height);
+					applyHeight($element.find('jlo-chatbar-chat-internal'), _this.height);
 				};
 				onResize();
 				
@@ -53,11 +54,8 @@ ngModule.directive('jloChatbar', function() {
 		controllerAs: 'chatBarCtrl',
 		template: [
 			'<div style="display:none;" ng-transclude></div>',
-			'<div ng-repeat="chat in chatBarCtrl.chatList track by chat.id"',
-				' class="jlo-chatbar__chat" ng-class="{\'jlo-chatbar__chat--open\': chat.opened}">',
-				'<jlo-chatbar-minimized-internal></jlo-chatbar-minimized-internal>',
-				'<jlo-chatbar-open-internal></jlo-chatbar-open-internal>',
-			'</div>'
+			'<jlo-chatbar-chat-internal ng-repeat="chat in chatBarCtrl.chatList track by chat.id">',
+			'</jlo-chatbar-chat-internal>'
 		].join('')
 	};
 });
@@ -90,20 +88,21 @@ ngModule.directive('jloChatbarOpen', function() {
 
 ngModule.directive('jloChatbarResizer', function() {
 	return {
+		require: '^^jloChatbarChatInternal',
 		restrict: 'AE',
 		transclude: 'element',
 		link: function ($scope, $element) {
-			var chatElt,
+			var chatElt, chatOpenElt,
 				resizerElt
 			;
 	
 			chatElt = $element;			
 			do {
 				chatElt = chatElt.parent();
-			} while (chatElt.length && chatElt[0].tagName.toLowerCase() !== 'jlo-chatbar-open');
+			} while (chatElt.length && chatElt[0].tagName.toLowerCase() !== 'jlo-chatbar-chat-internal');
 			
 			if (!chatElt.length) {
-				throw new Error('jlo-chatbar-resizer must be inside jlo-chatbar-open');
+				throw new Error('jlo-chatbar-resizer must be inside jlo-chatbar-open or jlo-chatbar-minimized');
 			}
 
 			resizerElt = angular.element('<div class="jlo-chatbar__resizer"></div>');
@@ -111,7 +110,22 @@ ngModule.directive('jloChatbarResizer', function() {
 			$element.after(resizerElt);
 			$element.remove();
 			
-			initResizer(resizerElt);
+			initResizer(resizerElt, chatElt);
+		}
+	};
+});
+
+ngModule.directive('jloChatbarFocus', function($q, $window) {
+	return {
+		require: '^^jloChatbarChatInternal',
+		restrict: 'AE',
+		link: function ($scope, $element, $attrs, ctrl) {
+			$scope.$on('jlo.chatbar.focus', function (event, chat) {
+				if (chat === ctrl.chat.data) {
+					$element[0].focus();
+					$window.scrollTo(0, 0); //because focus moves out of viewport
+				}
+			});
 		}
 	};
 });

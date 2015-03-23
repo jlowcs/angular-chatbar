@@ -1,68 +1,72 @@
 import ngModule from './_module';
 import {applyHeight} from './utils';
 
-function internalDirective(transcludeFnName, className, open) {
-	return function ($scope, $element, $attrs, ctrl) {
-		if (!ctrl[transcludeFnName]) {
-			return ;
-		}
-		
-		var transcludedScope,
-			chat = $scope.$eval('chat'),
-			elt,
-			info = {},
-			facade = {
-				remove: function() {
-					ctrl.remove(chat);
-				},
-				minimize: function() {
-					ctrl.minimize(chat);
-				},
-				open: function() {
-					ctrl.open(chat);
+ngModule.directive('jloChatbarChatInternal', function($animate) {
+	return {
+		require: ['jloChatbarChatInternal', '^^jloChatbar'],
+		restrict: 'AE',
+		controller: function () {},
+		link: function internalDirective($scope, $element, $attrs, ctrls) {
+			var ctrl = ctrls[0],
+				jloChatbarCtrl = ctrls[1]
+			;
+
+			if (!jloChatbarCtrl.minimizedTransclude && !jloChatbarCtrl.openTransclude) {
+				return ;
+			}
+			
+			var scope = $scope.$new(),
+				elts = {},
+				facade = {
+					remove: function() {
+						jloChatbarCtrl.remove(ctrl.chat);
+					},
+					minimize: function() {
+						jloChatbarCtrl.minimize(ctrl.chat);
+					},
+					open: function(focus) {
+						jloChatbarCtrl.open(ctrl.chat, focus);
+					}
 				}
-			}
-		;
-		
-		ctrl[transcludeFnName](function (clone, scope) {
-			transcludedScope = scope;
-			ctrl.chatVarName && (scope[ctrl.chatVarName] = chat.data);
-			ctrl.ctrlVarName && (scope[ctrl.ctrlVarName] = facade);
-			elt = clone;
-			$element.empty();
-			$element.after(clone);
-			$element.remove();
-			clone.addClass(className);
-			if (open && ctrl.height) {
-				applyHeight(clone, ctrl.height);
-			}
-		});
-		
-		open && $scope.$watch('chat.opened', function (value) {
-			setTimeout(function () {
-				elt.toggleClass(className + '--visible', value);
-			}, 1);
-		});
-		
-		$scope.$watch('chat', function (value) {
-			chat = value;
-			ctrl.chatVarName && (transcludedScope[ctrl.chatVarName] = chat.data);
-		});
-	};
-}
+			;
 
-ngModule.directive('jloChatbarMinimizedInternal', function() {
-	return {
-		require: '^^jloChatbar',
-		restrict: 'AE',
-		link: internalDirective('minimizedTransclude', 'jlo-chatbar__minimized')
-	};
-});
+			ctrl.chat = $scope.chat;
+			jloChatbarCtrl.chatVarName && (scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data);
+			jloChatbarCtrl.ctrlVarName && (scope[jloChatbarCtrl.ctrlVarName] = facade);
 
-ngModule.directive('jloChatbarOpenInternal', function() {
-	return {
-		require: '^^jloChatbar',
-		restrict: 'AE',
-		link: internalDirective('openTransclude', 'jlo-chatbar__open', true)
+			$element.empty()
+			.addClass('jlo-chatbar__chat');
+
+			$scope.$watch('chat', function (value) {
+				ctrl.chat = value;
+				scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data;
+			});
+				
+			$scope.$watch('chat.opened', function (value) {
+				setTimeout(function () {
+					elts.open && elts.open.toggleClass('jlo-chatbar__open--visible', value);
+				}, 1);
+
+				value && applyHeight($element, jloChatbarCtrl.height);
+
+				$animate[value ? 'addClass' : 'removeClass']($element, 'jlo-chatbar__chat--open');
+			});
+			
+			if (jloChatbarCtrl.minimizedTransclude) {
+				jloChatbarCtrl.minimizedTransclude(scope, function (clone, scope) {
+					elts.minimized = clone;
+					$element.append(clone);
+					clone.addClass('jlo-chatbar__minimized');
+				});
+			}
+			
+			if (jloChatbarCtrl.openTransclude) {
+				jloChatbarCtrl.openTransclude(scope, function (clone, scope) {
+					elts.open = clone;
+					$element.append(clone);
+					clone.addClass('jlo-chatbar__open');
+				});
+			}
+		}
 	};
 });

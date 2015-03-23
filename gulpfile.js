@@ -8,8 +8,9 @@ var uglify = require("gulp-uglify");
 var cssmin = require("gulp-cssmin");
 var ngAnnotate = require('gulp-ng-annotate');
 var nib = require("nib");
+var watch = require('gulp-watch');
 
-gulp.task('default', function() {
+function compileJs(devOnly) {
 	var othersUmd = gulp.src(['src/**/*.js', '!src/main.js'])
 		.pipe(babel({
 			modules: 'umdStrict',
@@ -21,32 +22,60 @@ gulp.task('default', function() {
 			modules: 'umdStrict',
 			moduleIds: true,
 			moduleId: 'angular-chatbar'
-		}))
-	;
-
-	var streams = [];
-
-	streams.push(
-		merge(othersUmd, mainUmd)
+		})),
+		stream = merge(othersUmd, mainUmd)
 		.pipe(concat('angular-chatbar.umd.js'))
 		.pipe(gulp.dest('dist'))
-        .pipe(ngAnnotate())
-    	.pipe(uglify())
+	;
+
+	if (!devOnly) {
+		stream = stream
+		.pipe(ngAnnotate())
+		.pipe(uglify())
 		.pipe(rename('angular-chatbar.umd.min.js'))
+		.pipe(gulp.dest('dist'));
+	}
+
+	return stream;
+}
+
+function compileCss(name, devOnly) {
+	var stream = gulp.src('styles/' + name + '.styl')
+		.pipe(stylus({use: nib()}))
+		.pipe(rename('angular-' + name + '.css'))
 		.pipe(gulp.dest('dist'))
-	);
+	;
+
+	if (!devOnly) {
+		stream = stream.pipe(cssmin())
+		.pipe(rename('angular-' + name + '.min.css'))
+		.pipe(gulp.dest('dist'));
+	}
+
+	return stream;
+}
+
+function compileAllCss(devOnly) {
+	var streams = [];
 
 	['chatbar', 'chatbar.default-theme', 'chatbar.default-theme.animations'].forEach(function (name) {
-		streams.push(
-			gulp.src('styles/' + name + '.styl')
-		    .pipe(stylus({use: nib()}))
-		    .pipe(rename('angular-' + name + '.css'))
-		    .pipe(gulp.dest('dist'))
-		    .pipe(cssmin())
-			.pipe(rename('angular-' + name + '.min.css'))
-			.pipe(gulp.dest('dist'))
-		);
+		streams.push(compileCss(name, devOnly));
 	});
 
 	return merge.apply(null, streams);
+}
+
+gulp.task('default', function() {
+	return merge.apply(compileJs(), compileAllCss());
 });
+
+gulp.task('_watch', function() {
+	watch('styles/**/*.styl', function () {
+		compileAllCss(true);
+	});
+	watch('src/**/*.js', function () {
+		compileJs(true);
+	});
+});
+
+gulp.task('watch', ['default', '_watch']);

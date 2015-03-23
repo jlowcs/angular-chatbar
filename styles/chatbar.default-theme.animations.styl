@@ -14,11 +14,18 @@
 			transition: all ($enter-leave-animation-delay + $enter-leave-animation-time + $open-close-animation-time);
 		}
 
-		&-add .jlo-chatbar__open,
-		&-remove .jlo-chatbar__open,
+		&-add,
+		&-remove,
 		&.ng-enter,
 		&.ng-leave {
-			display: inline-block;
+			min-height: $chat-open-min-height!important;
+			.jlo-chatbar__open {
+				display: inline-block!important;
+				overflow: hidden!important;
+			}
+			.jlo-chatbar__minimized {
+				display: none!important;
+			}
 		}
 	}
 	
@@ -33,8 +40,7 @@
 		&.ng-enter {
 			.jlo-chatbar__open {
 				transition:
-					height $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
-					min-height $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
+					bottom $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
 					border-width 1ms linear ($enter-leave-animation-delay + $enter-leave-animation-time),
 					opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
 			}
@@ -42,8 +48,7 @@
 		&.ng-leave {
 			.jlo-chatbar__open {
 				transition:
-					height $open-close-animation-time linear,
-					min-height $open-close-animation-time linear,
+					bottom $open-close-animation-time linear,
 					border-width 1ms linear $open-close-animation-time,
 					opacity $enter-leave-animation-time linear $open-close-animation-time;
 			}
@@ -54,22 +59,19 @@
 		&-add:not(&-add-active),
 		&-remove&-remove-active {
 			.jlo-chatbar__open {
-				height: $chat-minimized-height!important;
-				min-height: 0!important;
+				bottom: calc(-100% + 2.5em)!important;
 			}
 		}
 		
 		&.ng-move:not(.ng-move-active) {
 			.jlo-chatbar__open:not(.jlo-chatbar__open--visible) {				
-				height: $chat-minimized-height!important;
-				min-height: 0!important;
+				bottom: calc(-100% + 2.5em)!important;
 			}
 		}
 		&.ng-enter:not(.ng-enter-active),
 		&.ng-leave.ng-leave-active {
 			.jlo-chatbar__open {
-				height: $chat-minimized-height!important;
-				min-height: 0!important;
+				bottom: calc(-100% + 2.5em)!important;
 				border-width: 0px!important;
 				opacity: 0;
 			}
@@ -79,23 +81,23 @@
 		&-remove:not(&-remove-active),
 		&.ng-move.ng-move-active {
 			.jlo-chatbar__open {
-				height: $chat-minimized-height;
+				bottom: 0!important;
 			}
 		}
 		&.ng-enter.ng-enter-active,
 		&.ng-leave:not(.ng-leave-active) {
 			.jlo-chatbar__open {
-				height: $chat-minimized-height;
+				bottom: 0!important;
 				opacity: 1;
 			}
 		}
 	}
 	
 	&:not(&--open).ng-leave {
-		transition: height $open-close-animation-time, opacity $enter-leave-animation-time linear;
+		transition: bottom $open-close-animation-time, opacity $enter-leave-animation-time linear;
 	}
 	&:not(&--open).ng-enter {
-		transition: height $open-close-animation-time, opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
+		transition: bottom $open-close-animation-time, opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
 	}
 	
 	&:not(&--open).ng-enter:not(.ng-enter-active),

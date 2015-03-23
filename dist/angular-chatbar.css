@@ -5,11 +5,12 @@
   box-sizing: border-box;
   height: 0px;
   line-height: 10000px; /*so that hidden open panel does not show over visible chat */
+  bottom: 10000px;
 }
 .jlo-chatbar__chat {
   position: relative;
   display: inline-block;
-  vertical-align: top;
+  vertical-align: bottom;
 }
 .jlo-chatbar__minimized,
 .jlo-chatbar__open {
@@ -20,6 +21,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
+  overflow: hidden;
 }
 .jlo-chatbar__minimized {
   display: block;

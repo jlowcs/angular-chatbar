@@ -45,13 +45,14 @@ ngModule.provider('jloChatbar', function () {
 	this.maxHeight = serviceDataSizeFieldSetter('maxHeight');
 	this.height = serviceDataSizeFieldSetter('height');
 	
-	this.$get = function () {
-		var list = [],
-			res = {}
+	this.$get = function ($rootScope, $timeout) {
+		var service = {
+				list: []
+			}
 		;
 		
 		function indexOfChat(chat) {
-			return list.reduce(function (res, c, index) {
+			return service.list.reduce(function (res, c, index) {
 				if (res >= 0) {
 					return res;
 				}
@@ -62,37 +63,48 @@ ngModule.provider('jloChatbar', function () {
 			}, -1);
 		}
 		
-		res.addChat = function (chat, opened) {
+		service.addChat = function (chat, opened, focus) {
 			var idx = indexOfChat(chat),
 				current
 			;
+
 			if (idx !== -1) {
-				current = list[idx];
-				list.splice(idx, 1);
+				current = service.list.splice(idx, 1)[0];
 			}
-			list.unshift({
+
+			opened = current && current.opened || !!opened;
+
+			service.list.unshift({
 				get id() {
 					return _chatId(this.data);
 				},
 				data: chat,
-				opened: current && current.opened || !!opened
+				opened: opened
 			});
+console.log(opened);
+			if (opened && focus) {
+				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', chat));
+			}
 		};
 		
-		res.removeChat = function (chat) {
+		service.focusChat = function (chat) {
+			var idx = indexOfChat(chat),
+				current
+			;
+
+			if (idx !== -1) {
+				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', service.list[idx].data));
+			}
+		};
+		
+		service.removeChat = function (chat) {
 			var idx = indexOfChat(chat);
 			if (idx !== -1) {
-				list.splice(idx, 1);
+				service.list.splice(idx, 1);
 			}
 		};
 		
-		Object.defineProperty(res, 'list', {
-			get: function () {
-				return list;
-			}
-		});
-		
-		return res;
+		return service;
 	};
 });
 
