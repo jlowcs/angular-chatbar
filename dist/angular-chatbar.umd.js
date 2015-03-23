@@ -339,7 +339,7 @@
 						enumerable: true
 					}
 				}));
-				console.log(opened);
+				
 				if (opened && focus) {
 					$timeout(function () {
 						return $rootScope.$broadcast("jlo.chatbar.focus", chat);
