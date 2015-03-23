@@ -122,8 +122,10 @@ ngModule.directive('jloChatbarFocus', function($q, $window) {
 		link: function ($scope, $element, $attrs, ctrl) {
 			$scope.$on('jlo.chatbar.focus', function (event, chat) {
 				if (chat === ctrl.chat.data) {
-					$element[0].focus();
-					$window.scrollTo(0, 0); //because focus moves out of viewport
+					setTimeout(function () {
+						$element[0].focus();
+						$window.scrollTo(0, 0); //because focus moves out of viewport
+					}, $attrs.jloChatbarFocus && parseInt($attrs.jloChatbarFocus, 10) || 1);
 				}
 			});
 		}

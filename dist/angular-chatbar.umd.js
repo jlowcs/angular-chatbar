@@ -148,8 +148,10 @@
 			link: function link($scope, $element, $attrs, ctrl) {
 				$scope.$on("jlo.chatbar.focus", function (event, chat) {
 					if (chat === ctrl.chat.data) {
-						$element[0].focus();
-						$window.scrollTo(0, 0); //because focus moves out of viewport
+						setTimeout(function () {
+							$element[0].focus();
+							$window.scrollTo(0, 0); //because focus moves out of viewport
+						}, $attrs.jloChatbarFocus && parseInt($attrs.jloChatbarFocus, 10) || 1);
 					}
 				});
 			}
@@ -339,7 +341,7 @@
 						enumerable: true
 					}
 				}));
-				
+
 				if (opened && focus) {
 					$timeout(function () {
 						return $rootScope.$broadcast("jlo.chatbar.focus", chat);
@@ -385,7 +387,6 @@
 			return;
 		}
 		if (height) {
-			console.log("in");
 			!angular.isUndefined(height.maxHeight) && elt.css("max-height", height.maxHeight + "px");
 			!angular.isUndefined(height.minHeight) && elt.css("min-height", height.minHeight + "px");
 			angular.forEach(elt, function (e) {
@@ -393,19 +394,6 @@
 					angular.element(e).css("height", height.height + "px");
 				}
 			});
-			/*angular.forEach(elt, function(e) {
-   	var styles,
-   		openElt = angular.element(e).find('jlo-chatbar-open')
-   	;
-   		if (!openElt.length) {
-   		return ;
-   	}
-   		styles = document.defaultView.getComputedStyle(e);
-   	openElt
-   	.css('max-height', styles.maxHeight)
-   	.css('min-height', styles.minHeight)
-   	.css('height', styles.height);
-   });*/
 		}
 	}
 

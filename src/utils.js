@@ -3,7 +3,6 @@ function applyHeight(elt, height) {
 		return ;
 	}
 	if (height) {
-		console.log('in');
 		!angular.isUndefined(height.maxHeight) && elt.css('max-height', height.maxHeight + 'px');
 		!angular.isUndefined(height.minHeight) && elt.css('min-height', height.minHeight + 'px');
 		angular.forEach(elt, function(e){
@@ -11,21 +10,6 @@ function applyHeight(elt, height) {
 				angular.element(e).css('height', height.height + 'px');
 			}
 		});
-		/*angular.forEach(elt, function(e) {
-			var styles,
-				openElt = angular.element(e).find('jlo-chatbar-open')
-			;
-
-			if (!openElt.length) {
-				return ;
-			}
-
-			styles = document.defaultView.getComputedStyle(e);
-			openElt
-			.css('max-height', styles.maxHeight)
-			.css('min-height', styles.minHeight)
-			.css('height', styles.height);
-		});*/
 	}
 }
 

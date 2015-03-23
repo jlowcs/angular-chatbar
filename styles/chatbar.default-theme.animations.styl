@@ -40,7 +40,7 @@
 		&.ng-enter {
 			.jlo-chatbar__open {
 				transition:
-					bottom $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
+					transform $open-close-animation-time linear ($enter-leave-animation-delay + $enter-leave-animation-time),
 					border-width 1ms linear ($enter-leave-animation-delay + $enter-leave-animation-time),
 					opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
 			}
@@ -48,7 +48,7 @@
 		&.ng-leave {
 			.jlo-chatbar__open {
 				transition:
-					bottom $open-close-animation-time linear,
+					transform $open-close-animation-time linear,
 					border-width 1ms linear $open-close-animation-time,
 					opacity $enter-leave-animation-time linear $open-close-animation-time;
 			}
@@ -59,19 +59,19 @@
 		&-add:not(&-add-active),
 		&-remove&-remove-active {
 			.jlo-chatbar__open {
-				bottom: calc(-100% + 2.5em)!important;
+				transform: "translateY(100%) translateY(-%s)" % ($chat-minimized-height);
 			}
 		}
 		
 		&.ng-move:not(.ng-move-active) {
-			.jlo-chatbar__open:not(.jlo-chatbar__open--visible) {				
-				bottom: calc(-100% + 2.5em)!important;
+			.jlo-chatbar__open:not(.jlo-chatbar__open--visible) {		
+				transform: "translateY(100%) translateY(-%s)" % ($chat-minimized-height);
 			}
 		}
 		&.ng-enter:not(.ng-enter-active),
 		&.ng-leave.ng-leave-active {
 			.jlo-chatbar__open {
-				bottom: calc(-100% + 2.5em)!important;
+				transform: "translateY(100%) translateY(-%s)" % ($chat-minimized-height);
 				border-width: 0px!important;
 				opacity: 0;
 			}
@@ -81,23 +81,23 @@
 		&-remove:not(&-remove-active),
 		&.ng-move.ng-move-active {
 			.jlo-chatbar__open {
-				bottom: 0!important;
+				transform: translateY(0);
 			}
 		}
 		&.ng-enter.ng-enter-active,
 		&.ng-leave:not(.ng-leave-active) {
 			.jlo-chatbar__open {
-				bottom: 0!important;
+				transform: translateY(0);
 				opacity: 1;
 			}
 		}
 	}
 	
 	&:not(&--open).ng-leave {
-		transition: bottom $open-close-animation-time, opacity $enter-leave-animation-time linear;
+		transition: transform $open-close-animation-time, opacity $enter-leave-animation-time linear;
 	}
 	&:not(&--open).ng-enter {
-		transition: bottom $open-close-animation-time, opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
+		transition: transform $open-close-animation-time, opacity $enter-leave-animation-time linear $enter-leave-animation-delay;
 	}
 	
 	&:not(&--open).ng-enter:not(.ng-enter-active),

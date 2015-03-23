@@ -81,7 +81,7 @@ ngModule.provider('jloChatbar', function () {
 				data: chat,
 				opened: opened
 			});
-console.log(opened);
+			
 			if (opened && focus) {
 				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', chat));
 			}

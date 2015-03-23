@@ -52,6 +52,7 @@ html, body {
 	padding: 0;
 	
 	border: none;
+  	overflow: hidden;
 }
 .jlo-chatbar__open:before {
 	content: none;
