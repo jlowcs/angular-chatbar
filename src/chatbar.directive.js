@@ -1,6 +1,5 @@
 import ngModule from './_module';
-import {serviceData} from './chatbar.service';
-import {applyHeight, initResizer} from './utils';
+import {initResizer} from './utils';
 
 ngModule.directive('jloChatbar', function() {
 	return {
@@ -30,26 +29,6 @@ ngModule.directive('jloChatbar', function() {
 			this.remove = function (chat) {
 				jloChatbar.removeChat(chat.data);
 			};
-			
-			this.height = {};
-			
-			if (serviceData.maxHeight || serviceData.height) {
-				let onResize = function () {
-					var windowHeight = $window.innerHeight;
-					_this.height = {
-						maxHeight: serviceData.maxHeight && serviceData.maxHeight(windowHeight),
-						height: serviceData.height && serviceData.height(windowHeight)
-					};
-					applyHeight($element.find('jlo-chatbar-chat-internal'), _this.height);
-				};
-				onResize();
-				
-				angular.element($window).on('resize', onResize);
-				
-				$scope.$on('$destroy', function () {
-					angular.element($window).off('resize', onResize);
-				});
-			}
 		},
 		controllerAs: 'chatBarCtrl',
 		template: [
@@ -99,10 +78,10 @@ ngModule.directive('jloChatbarResizer', function() {
 			chatElt = $element;			
 			do {
 				chatElt = chatElt.parent();
-			} while (chatElt.length && chatElt[0].tagName.toLowerCase() !== 'jlo-chatbar-chat-internal');
+			} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== 'jlo-chatbar-open');
 			
-			if (!chatElt.length) {
-				throw new Error('jlo-chatbar-resizer must be inside jlo-chatbar-open or jlo-chatbar-minimized');
+			if (!chatElt.length || chatElt[0] === document) {
+				throw new Error('jlo-chatbar-resizer must be inside jlo-chatbar-open');
 			}
 
 			resizerElt = angular.element('<div class="jlo-chatbar__resizer"></div>');

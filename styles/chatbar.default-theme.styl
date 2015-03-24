@@ -9,17 +9,13 @@
 	text-align: right;
 
 	&__chat {
+		position: relative;
 		font-size: $chat-font-size;
 		text-align: left;
 		width: $chat-width; /*width of chat elt*/
-		height: $chat-minimized-height;
 		margin: 0 $chat-sides-margin; /*separation of chat elt*/
 		line-height: normal;
-		
-		&--open {
-			min-height: $chat-open-min-height;
-			height: $chat-open-height;			
-		}
+		overflow: hidden;
 	}
 
 	&__minimized {
@@ -31,7 +27,10 @@
 	}
 
 	&__open {
-		height: 100%;
+		min-height: $chat-open-min-height;
+		height: $chat-open-height;		
+		max-height: $chat-open-max-height;
+			
 		background-color: white;
 		color: white;
 		border: $chat-border-width solid $chat-border-color;

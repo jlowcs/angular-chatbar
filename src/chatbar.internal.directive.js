@@ -1,5 +1,4 @@
 import ngModule from './_module';
-import {applyHeight} from './utils';
 
 ngModule.directive('jloChatbarChatInternal', function($animate) {
 	return {
@@ -35,7 +34,8 @@ ngModule.directive('jloChatbarChatInternal', function($animate) {
 			jloChatbarCtrl.ctrlVarName && (scope[jloChatbarCtrl.ctrlVarName] = facade);
 
 			$element.empty()
-			.addClass('jlo-chatbar__chat');
+			.addClass('jlo-chatbar__chat')
+			.toggleClass('jlo-chatbar__chat--open', $scope.chat.opened);
 
 			$scope.$watch('chat', function (value) {
 				ctrl.chat = value;
@@ -47,24 +47,22 @@ ngModule.directive('jloChatbarChatInternal', function($animate) {
 					elts.open && elts.open.toggleClass('jlo-chatbar__open--visible', value);
 				}, 1);
 
-				value && applyHeight($element, jloChatbarCtrl.height);
-
 				$animate[value ? 'addClass' : 'removeClass']($element, 'jlo-chatbar__chat--open');
 			});
-			
-			if (jloChatbarCtrl.minimizedTransclude) {
-				jloChatbarCtrl.minimizedTransclude(scope, function (clone, scope) {
-					elts.minimized = clone;
-					$element.append(clone);
-					clone.addClass('jlo-chatbar__minimized');
-				});
-			}
 			
 			if (jloChatbarCtrl.openTransclude) {
 				jloChatbarCtrl.openTransclude(scope, function (clone, scope) {
 					elts.open = clone;
-					$element.append(clone);
 					clone.addClass('jlo-chatbar__open');
+					$animate.enter(clone, $element);
+				});
+			}
+			
+			if (jloChatbarCtrl.minimizedTransclude) {
+				jloChatbarCtrl.minimizedTransclude(scope, function (clone, scope) {
+					elts.minimized = clone;
+					clone.addClass('jlo-chatbar__minimized');
+					$animate.enter(clone, $element);
 				});
 			}
 		}

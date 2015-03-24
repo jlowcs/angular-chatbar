@@ -20,16 +20,14 @@
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
-		define("angular-chatbar/chatbar.directive", ["exports", "./_module", "./chatbar.service", "./utils"], factory);
+		define("angular-chatbar/chatbar.directive", ["exports", "./_module", "./utils"], factory);
 	} else if (typeof exports !== "undefined") {
-		factory(exports, require("./_module"), require("./chatbar.service"), require("./utils"));
+		factory(exports, require("./_module"), require("./utils"));
 	}
-})(function (exports, _module2, _chatbarService, _utils) {
+})(function (exports, _module2, _utils) {
 	"use strict";
 
 	var ngModule = _module2["default"];
-	var serviceData = _chatbarService.serviceData;
-	var applyHeight = _utils.applyHeight;
 	var initResizer = _utils.initResizer;
 
 	ngModule.directive("jloChatbar", function () {
@@ -60,28 +58,6 @@
 				this.remove = function (chat) {
 					jloChatbar.removeChat(chat.data);
 				};
-
-				this.height = {};
-
-				if (serviceData.maxHeight || serviceData.height) {
-					(function () {
-						var onResize = function onResize() {
-							var windowHeight = $window.innerHeight;
-							_this.height = {
-								maxHeight: serviceData.maxHeight && serviceData.maxHeight(windowHeight),
-								height: serviceData.height && serviceData.height(windowHeight)
-							};
-							applyHeight($element.find("jlo-chatbar-chat-internal"), _this.height);
-						};
-						onResize();
-
-						angular.element($window).on("resize", onResize);
-
-						$scope.$on("$destroy", function () {
-							angular.element($window).off("resize", onResize);
-						});
-					})();
-				}
 			},
 			controllerAs: "chatBarCtrl",
 			template: ["<div style=\"display:none;\" ng-transclude></div>", "<jlo-chatbar-chat-internal ng-repeat=\"chat in chatBarCtrl.chatList track by chat.id\">", "</jlo-chatbar-chat-internal>"].join("")
@@ -125,10 +101,10 @@
 				chatElt = $element;
 				do {
 					chatElt = chatElt.parent();
-				} while (chatElt.length && chatElt[0].tagName.toLowerCase() !== "jlo-chatbar-chat-internal");
+				} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== "jlo-chatbar-open");
 
-				if (!chatElt.length) {
-					throw new Error("jlo-chatbar-resizer must be inside jlo-chatbar-open or jlo-chatbar-minimized");
+				if (!chatElt.length || chatElt[0] === document) {
+					throw new Error("jlo-chatbar-resizer must be inside jlo-chatbar-open");
 				}
 
 				resizerElt = angular.element("<div class=\"jlo-chatbar__resizer\"></div>");
@@ -160,15 +136,14 @@
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
-		define("angular-chatbar/chatbar.internal.directive", ["exports", "./_module", "./utils"], factory);
+		define("angular-chatbar/chatbar.internal.directive", ["exports", "./_module"], factory);
 	} else if (typeof exports !== "undefined") {
-		factory(exports, require("./_module"), require("./utils"));
+		factory(exports, require("./_module"));
 	}
-})(function (exports, _module2, _utils) {
+})(function (exports, _module2) {
 	"use strict";
 
 	var ngModule = _module2["default"];
-	var applyHeight = _utils.applyHeight;
 
 	ngModule.directive("jloChatbarChatInternal", function ($animate) {
 		return {
@@ -201,7 +176,7 @@
 				jloChatbarCtrl.chatVarName && (scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data);
 				jloChatbarCtrl.ctrlVarName && (scope[jloChatbarCtrl.ctrlVarName] = facade);
 
-				$element.empty().addClass("jlo-chatbar__chat");
+				$element.empty().addClass("jlo-chatbar__chat").toggleClass("jlo-chatbar__chat--open", $scope.chat.opened);
 
 				$scope.$watch("chat", function (value) {
 					ctrl.chat = value;
@@ -213,24 +188,22 @@
 						elts.open && elts.open.toggleClass("jlo-chatbar__open--visible", value);
 					}, 1);
 
-					value && applyHeight($element, jloChatbarCtrl.height);
-
 					$animate[value ? "addClass" : "removeClass"]($element, "jlo-chatbar__chat--open");
 				});
-
-				if (jloChatbarCtrl.minimizedTransclude) {
-					jloChatbarCtrl.minimizedTransclude(scope, function (clone, scope) {
-						elts.minimized = clone;
-						$element.append(clone);
-						clone.addClass("jlo-chatbar__minimized");
-					});
-				}
 
 				if (jloChatbarCtrl.openTransclude) {
 					jloChatbarCtrl.openTransclude(scope, function (clone, scope) {
 						elts.open = clone;
-						$element.append(clone);
 						clone.addClass("jlo-chatbar__open");
+						$animate.enter(clone, $element);
+					});
+				}
+
+				if (jloChatbarCtrl.minimizedTransclude) {
+					jloChatbarCtrl.minimizedTransclude(scope, function (clone, scope) {
+						elts.minimized = clone;
+						clone.addClass("jlo-chatbar__minimized");
+						$animate.enter(clone, $element);
 					});
 				}
 			}
@@ -257,32 +230,6 @@
 
 	var ngModule = _module2["default"];
 
-	var serviceData = {
-		maxHeight: undefined,
-		height: undefined
-	};
-
-	function serviceDataSizeFieldSetter(serviceDataField) {
-		return function (val) {
-			if (!angular.isFunction(val)) {
-				if (val.match(/%$/)) {
-					val = parseInt(val);
-					serviceData[serviceDataField] = function (windowHeight) {
-						return windowHeight * val / 100;
-					};
-					return;
-				}
-
-				serviceData[serviceDataField] = function () {
-					return val;
-				};
-				return;
-			}
-
-			serviceData[serviceDataField] = val;
-		};
-	}
-
 	ngModule.provider("jloChatbar", function () {
 		var _chatId;
 
@@ -298,9 +245,6 @@
 		};
 
 		this.chatId("id");
-
-		this.maxHeight = serviceDataSizeFieldSetter("maxHeight");
-		this.height = serviceDataSizeFieldSetter("height");
 
 		this.$get = function ($rootScope, $timeout) {
 			var service = {
@@ -370,8 +314,6 @@
 			return service;
 		};
 	});
-
-	exports.serviceData = serviceData;
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
@@ -381,21 +323,6 @@
 	}
 })(function (exports) {
 	"use strict";
-
-	function applyHeight(elt, height) {
-		if (!elt.length) {
-			return;
-		}
-		if (height) {
-			!angular.isUndefined(height.maxHeight) && elt.css("max-height", height.maxHeight + "px");
-			!angular.isUndefined(height.minHeight) && elt.css("min-height", height.minHeight + "px");
-			angular.forEach(elt, function (e) {
-				if (!angular.isUndefined(height.height) && !angular.element(e).data("jlo-chatbar-chat-resized")) {
-					angular.element(e).css("height", height.height + "px");
-				}
-			});
-		}
-	}
 
 	function initResizer(resizerElt, chatElt) {
 		var startX, startY, startWidth, startHeight;
@@ -422,6 +349,5 @@
 		}
 	}
 
-	exports.applyHeight = applyHeight;
 	exports.initResizer = initResizer;
 });

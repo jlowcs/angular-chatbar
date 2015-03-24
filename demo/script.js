@@ -2,10 +2,6 @@ define('app', ['angular-chatbar'], function () {
 	angular.module('exampleApp', ['jlo-chatbar', 'ngAnimate'])
 	.config(function (jloChatbarProvider) {
 		jloChatbarProvider.chatId('_id');
-		jloChatbarProvider.height('30%');
-		jloChatbarProvider.maxHeight(function (windowHeight) {
-			return windowHeight - 50;
-		});
 	})
 	.controller('MyCtrl', function ($element, jloChatbar) {
 		var NAMES = ['John', 'Roger', 'Bob', 'Jim', 'Susan', 'Alice', 'Marie'],

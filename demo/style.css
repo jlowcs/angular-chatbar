@@ -49,6 +49,8 @@ html, body {
 }
 
 .jlo-chatbar__open {
+	max-height: calc(100vh - 2.5em);
+
 	padding: 0;
 	
 	border: none;

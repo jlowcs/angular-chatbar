@@ -11,6 +11,14 @@
   <body>
     <div class="main" ng-controller="MyCtrl as myCtrl">
       <button ng-repeat="chat in myCtrl.chatList" ng-click="myCtrl.openChat(chat)">open {{chat.title}}</button>
+
+    <!--<div style="width: 200px; height: 50px; overflow: hidden; border: 1px solid black;">
+		<div style="width: 300px; height: 50px; left: 100%; transform: translateX(-100%); position: relative;">
+    		Hello world
+    		<div style="width:110px; height:50px; background-color: red; float:right;"></div>
+    	</div>    	
+    </div>-->
+
       <jlo-chatbar chat="chat" ctrl="ctrl">
         <jlo-chatbar-minimized ng-click="ctrl.open(true)">
           {{chat.title}} - {{chat.contacts.join(', ')}}

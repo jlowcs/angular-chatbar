@@ -1,31 +1,5 @@
 import ngModule from './_module';
 
-var serviceData = {
-	maxHeight: undefined,
-	height: undefined
-};
-
-function serviceDataSizeFieldSetter(serviceDataField) {
-	return function (val) {
-		if (!angular.isFunction(val)) {
-			if (val.match(/%$/)) {
-				val = parseInt(val);
-				serviceData[serviceDataField] = function (windowHeight) {
-					return windowHeight * val / 100;
-				};
-				return ;
-			}
-			
-			serviceData[serviceDataField] = function () {
-				return val;
-			};
-			return ;
-		}
-		
-		serviceData[serviceDataField] = val;
-	};
-}
-
 ngModule.provider('jloChatbar', function () {
 	var _chatId;
 	
@@ -41,10 +15,7 @@ ngModule.provider('jloChatbar', function () {
 	};
 	
 	this.chatId('id');
-	
-	this.maxHeight = serviceDataSizeFieldSetter('maxHeight');
-	this.height = serviceDataSizeFieldSetter('height');
-	
+		
 	this.$get = function ($rootScope, $timeout) {
 		var service = {
 				list: []
@@ -81,7 +52,7 @@ ngModule.provider('jloChatbar', function () {
 				data: chat,
 				opened: opened
 			});
-			
+
 			if (opened && focus) {
 				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', chat));
 			}
@@ -107,5 +78,3 @@ ngModule.provider('jloChatbar', function () {
 		return service;
 	};
 });
-
-export {serviceData};

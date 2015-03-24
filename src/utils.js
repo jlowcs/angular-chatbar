@@ -1,18 +1,3 @@
-function applyHeight(elt, height) {
-	if (!elt.length) {
-		return ;
-	}
-	if (height) {
-		!angular.isUndefined(height.maxHeight) && elt.css('max-height', height.maxHeight + 'px');
-		!angular.isUndefined(height.minHeight) && elt.css('min-height', height.minHeight + 'px');
-		angular.forEach(elt, function(e){
-			if (!angular.isUndefined(height.height) && !angular.element(e).data('jlo-chatbar-chat-resized')) {
-				angular.element(e).css('height', height.height + 'px');
-			}
-		});
-	}
-}
-
 function initResizer(resizerElt, chatElt) {
 	var startX, startY, startWidth, startHeight
 	;
@@ -45,4 +30,4 @@ function initResizer(resizerElt, chatElt) {
 	}
 }
 
-export {applyHeight, initResizer};
+export {initResizer};

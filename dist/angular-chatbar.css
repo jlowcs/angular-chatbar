@@ -4,17 +4,17 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   height: 0px;
-  line-height: 10000px; /*so that hidden open panel does not show over visible chat */
-  bottom: 10000px;
+  line-height: 100vh; /*so that hidden open panel does not show over visible chat */
+  bottom: 0;
 }
 .jlo-chatbar__chat {
   position: relative;
+  bottom: 100vh;
   display: inline-block;
   vertical-align: bottom;
 }
 .jlo-chatbar__minimized,
 .jlo-chatbar__open {
-  position: absolute;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;

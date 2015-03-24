@@ -7,16 +7,13 @@
 /*this is to keep a default visual header similar to minimized*/
 }
 .jlo-chatbar__chat {
+  position: relative;
   font-size: 1.2em;
   text-align: left;
   width: 20em; /*width of chat elt*/
-  height: 2.5em;
   margin: 0 0.4em; /*separation of chat elt*/
   line-height: normal;
-}
-.jlo-chatbar__chat--open {
-  min-height: 15em;
-  height: 25em;
+  overflow: hidden;
 }
 .jlo-chatbar__minimized {
   line-height: 2.5em; /*height of chat elt*/
@@ -26,7 +23,9 @@
   color: #fff;
 }
 .jlo-chatbar__open {
-  height: 100%;
+  min-height: 15em;
+  height: 25em;
+  max-height: 100vh;
   background-color: #fff;
   color: #fff;
   border: 1px solid #808080;
