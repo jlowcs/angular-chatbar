@@ -35,9 +35,10 @@
 			restrict: "AE",
 			transclude: true,
 			scope: true,
-			controller: function controller($scope, $element, $attrs, $window, jloChatbar) {
-				var _this = this;
+			controller: function controller($scope, $element, $attrs, $window, $transclude, jloChatbar) {
 				$element.addClass("jlo-chatbar");
+
+				this.$transclude = $transclude;
 
 				this.$scope = $scope;
 
@@ -58,35 +59,14 @@
 				this.remove = function (chat) {
 					jloChatbar.removeChat(chat.data);
 				};
+
+				this.focus = function (chat) {
+					jloChatbar.focusChat(chat.data);
+				};
 			},
 			controllerAs: "chatBarCtrl",
-			template: ["<div style=\"display:none;\" ng-transclude></div>", "<jlo-chatbar-chat-internal ng-repeat=\"chat in chatBarCtrl.chatList track by chat.id\">", "</jlo-chatbar-chat-internal>"].join("")
-		};
-	});
-
-	ngModule.directive("jloChatbarMinimized", function () {
-		return {
-			require: "^^jloChatbar",
-			restrict: "E",
-			priority: 700,
-			terminal: true,
-			transclude: "element",
-			link: function link($scope, $element, $attrs, ctrl, $transclude) {
-				ctrl.minimizedTransclude = $transclude;
-			}
-		};
-	});
-
-	ngModule.directive("jloChatbarOpen", function () {
-		return {
-			require: "^^jloChatbar",
-			restrict: "E",
-			priority: 700,
-			terminal: true,
-			transclude: "element",
-			link: function link($scope, $element, $attrs, ctrl, $transclude) {
-				ctrl.openTransclude = $transclude;
-			}
+			template: ["<jlo-chatbar-chat-internal ng-repeat=\"chat in chatBarCtrl.chatList track by chat.id\" tabindex=\"-1\">", //tabindex is for mouse wheel scrolling
+			"</jlo-chatbar-chat-internal>"].join("")
 		};
 	});
 
@@ -96,15 +76,15 @@
 			restrict: "AE",
 			transclude: "element",
 			link: function link($scope, $element) {
-				var chatElt, chatOpenElt, resizerElt;
+				var chatElt, resizerElt;
 
 				chatElt = $element;
 				do {
 					chatElt = chatElt.parent();
-				} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== "jlo-chatbar-open");
+				} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== "jlo-chatbar-chat-internal");
 
 				if (!chatElt.length || chatElt[0] === document) {
-					throw new Error("jlo-chatbar-resizer must be inside jlo-chatbar-open");
+					throw new Error("jlo-chatbar-resizer must be inside jlo-chatbar-chat-internal");
 				}
 
 				resizerElt = angular.element("<div class=\"jlo-chatbar__resizer\"></div>");
@@ -133,6 +113,67 @@
 			}
 		};
 	});
+
+	ngModule.directive("jloChatbarScroll", function ($window) {
+		return {
+			require: "^^?jloChatbarChatInternal",
+			restrict: "AE",
+			link: function link($scope, $element, $attrs, ctrl) {
+				var isBottom,
+				    expr = $attrs.jloChatbarScroll || "",
+				    matches,
+				    watchExpr,
+				    resizeTimeout;
+
+				matches = expr.match(/^\s*(?:autoscroll\s+on\s+(.+))?\s*$/);
+
+				watchExpr = matches[1];
+
+				$element.on("scroll", function () {
+					isBottom = this.scrollTop + this.offsetHeight >= this.scrollHeight;
+				});
+
+				if (ctrl) {
+					var chatElt = $element;
+					do {
+						chatElt = chatElt.parent();
+					} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== "jlo-chatbar-chat-internal");
+
+					chatElt.on("jlo-chat-resize", function () {
+						isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
+					});
+				}
+
+				function onResize() {
+					resizeTimeout && clearTimeout(resizeTimeout);
+					resizeTimeout = setTimeout(function () {
+						isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
+						resizeTimeout = undefined;
+					}, 100);
+				}
+
+				angular.element($window).on("resize", onResize);
+
+				$scope.$on("$destroy", function () {
+					angular.element($window).off("resize", onResize);
+				});
+
+				isBottom = true;
+
+				if (watchExpr) {
+					$scope.$watchCollection(function () {
+						return [].concat($scope.$eval(watchExpr));
+					}, function () {
+						isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
+					});
+				} else {
+					setTimeout(function () {
+						$element[0].scrollTop = $element[0].scrollHeight;
+					});
+				}
+			}
+		};
+	});
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
@@ -145,7 +186,7 @@
 
 	var ngModule = _module2["default"];
 
-	ngModule.directive("jloChatbarChatInternal", function ($animate) {
+	ngModule.directive("jloChatbarChatInternal", function ($animate, $timeout) {
 		return {
 			require: ["jloChatbarChatInternal", "^^jloChatbar"],
 			restrict: "AE",
@@ -154,21 +195,23 @@
 				var ctrl = ctrls[0],
 				    jloChatbarCtrl = ctrls[1];
 
-				if (!jloChatbarCtrl.minimizedTransclude && !jloChatbarCtrl.openTransclude) {
+				if (!jloChatbarCtrl.$transclude) {
 					return;
 				}
 
 				var scope = $scope.$new(),
-				    elts = {},
 				    facade = {
-					remove: function remove() {
-						jloChatbarCtrl.remove(ctrl.chat);
+					remove: function () {
+						return jloChatbarCtrl.remove(ctrl.chat);
 					},
-					minimize: function minimize() {
-						jloChatbarCtrl.minimize(ctrl.chat);
+					minimize: function () {
+						return jloChatbarCtrl.minimize(ctrl.chat);
 					},
-					open: function open(focus) {
-						jloChatbarCtrl.open(ctrl.chat, focus);
+					open: function (focus) {
+						return jloChatbarCtrl.open(ctrl.chat, focus);
+					},
+					focus: function () {
+						return jloChatbarCtrl.focus(ctrl.chat);
 					}
 				};
 
@@ -176,7 +219,7 @@
 				jloChatbarCtrl.chatVarName && (scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data);
 				jloChatbarCtrl.ctrlVarName && (scope[jloChatbarCtrl.ctrlVarName] = facade);
 
-				$element.empty().addClass("jlo-chatbar__chat").toggleClass("jlo-chatbar__chat--open", $scope.chat.opened);
+				$element.empty().addClass("jlo-chatbar__chat");
 
 				$scope.$watch("chat", function (value) {
 					ctrl.chat = value;
@@ -184,28 +227,23 @@
 				});
 
 				$scope.$watch("chat.opened", function (value) {
-					setTimeout(function () {
-						elts.open && elts.open.toggleClass("jlo-chatbar__open--visible", value);
-					}, 1);
+					scope.$closed = false;
+					scope.$opened = false;
 
-					$animate[value ? "addClass" : "removeClass"]($element, "jlo-chatbar__chat--open");
+					//to allow ng-move to be done before animating the opening
+					$timeout(function () {
+						$element.toggleClass("jlo-chatbar__chat--minimized", !value);
+						$animate[!!value ? "addClass" : "removeClass"]($element, "jlo-chatbar__chat--open").then(function () {
+							return scope.$apply(function () {
+								return (scope.$closed = !value, scope.$opened = !!value);
+							});
+						});
+					}, 1);
 				});
 
-				if (jloChatbarCtrl.openTransclude) {
-					jloChatbarCtrl.openTransclude(scope, function (clone, scope) {
-						elts.open = clone;
-						clone.addClass("jlo-chatbar__open");
-						$animate.enter(clone, $element);
-					});
-				}
-
-				if (jloChatbarCtrl.minimizedTransclude) {
-					jloChatbarCtrl.minimizedTransclude(scope, function (clone, scope) {
-						elts.minimized = clone;
-						clone.addClass("jlo-chatbar__minimized");
-						$animate.enter(clone, $element);
-					});
-				}
+				jloChatbarCtrl.$transclude(scope, function (clone) {
+					return $animate.enter(clone, $element);
+				});
 			}
 		};
 	});
@@ -294,8 +332,7 @@
 			};
 
 			service.focusChat = function (chat) {
-				var idx = indexOfChat(chat),
-				    current;
+				var idx = indexOfChat(chat);
 
 				if (idx !== -1) {
 					$timeout(function () {
@@ -325,15 +362,14 @@
 	"use strict";
 
 	function initResizer(resizerElt, chatElt) {
-		var startX, startY, startWidth, startHeight;
-
-		resizerElt.on("mousedown", initDrag);
+		var startY, startHeight;
 
 		function doDrag(e) {
 			chatElt.css("height", startHeight + startY - e.clientY + "px");
+			chatElt.triggerHandler("jlo-chat-resize");
 		}
 
-		function stopDrag(e) {
+		function stopDrag() {
 			angular.element(document.body).removeClass("jlo-chatbar-noselect");
 			angular.element(document).off("mousemove", doDrag).off("mouseup", stopDrag);
 		}
@@ -347,6 +383,8 @@
 			angular.element(document.body).addClass("jlo-chatbar-noselect");
 			angular.element(document).on("mousemove", doDrag).on("mouseup", stopDrag);
 		}
+
+		resizerElt.on("mousedown", initDrag);
 	}
 
 	exports.initResizer = initResizer;

@@ -3,53 +3,29 @@
 
 .jlo-chatbar {
 	font-size: 0.75rem;
-	position: absolute;
 	right: $chatbar-sides-margin;
 	max-width: "calc(100% - %s - %s)" % ($chatbar-sides-margin $chatbar-sides-margin);
 	text-align: right;
 
 	&__chat {
-		position: relative;
 		font-size: $chat-font-size;
-		text-align: left;
 		width: $chat-width; /*width of chat elt*/
 		margin: 0 $chat-sides-margin; /*separation of chat elt*/
-		line-height: normal;
-		overflow: hidden;
-	}
-
-	&__minimized {
-		line-height: $chat-minimized-height; /*height of chat elt*/
-		background-color: $chat-background-color;
-		padding: 0 $chat-padding-sides;
-		cursor: pointer;
-		color: white;
-	}
-
-	&__open {
-		min-height: $chat-open-min-height;
-		height: $chat-open-height;		
-		max-height: $chat-open-max-height;
-			
-		background-color: white;
-		color: white;
-		border: $chat-border-width solid $chat-border-color;
-  		overflow: auto;
-	}
-
-	&__resizer {
-		position: absolute;
-		top: - ($chat-resizer-height / 2);
-		left: 0;
-		height: $chat-resizer-height;
-		cursor: ns-resize;
-	}
-
-	/*this is to keep a default visual header similar to minimized*/
-	&__open {
-		line-height: $chat-minimized-height;
-		padding: 0 ("calc(%s - %s)" % ($chat-padding-sides $chat-border-width));
 		
+		
+		min-height: $chat-open-min-height;
+		height: $chat-open-height;
+		max-height: $chat-open-max-height;
+		
+		bottom: calc(100vh + $chat-minimized-height);
+		transform: translateY(100%) translateZ(0); //z=0 to fix a redraw issue in firefox & chrome
+		
+		&--open {
+			transform: translateY($chat-minimized-height) translateZ(0); //z=0 to fix a redraw issue in firefox & chrome
+		}
+		
+		/*this is to keep a default visual header similar to minimized*/
+		line-height: $chat-minimized-height;
 		&:before {
 			content: '';
 			position: absolute;
@@ -60,6 +36,14 @@
 			height: $chat-minimized-height;
 			z-index: -1;
 		}
+	}
+
+	&__resizer {
+		position: absolute;
+		top: - ($chat-resizer-height / 2);
+		left: 0;
+		height: $chat-resizer-height;
+		cursor: ns-resize;
 	}
 }
 

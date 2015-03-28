@@ -6,45 +6,38 @@
     <link rel="stylesheet" href="http://localhost:3000/dist/angular-chatbar.default-theme.css">
     <link rel="stylesheet" href="http://localhost:3000/dist/angular-chatbar.default-theme.animations.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="chatbar.css">
   </head>
 
   <body>
     <div class="main" ng-controller="MyCtrl as myCtrl">
       <button ng-repeat="chat in myCtrl.chatList" ng-click="myCtrl.openChat(chat)">open {{chat.title}}</button>
 
-    <!--<div style="width: 200px; height: 50px; overflow: hidden; border: 1px solid black;">
-		<div style="width: 300px; height: 50px; left: 100%; transform: translateX(-100%); position: relative;">
-    		Hello world
-    		<div style="width:110px; height:50px; background-color: red; float:right;"></div>
-    	</div>    	
-    </div>-->
-
       <jlo-chatbar chat="chat" ctrl="ctrl">
-        <jlo-chatbar-minimized ng-click="ctrl.open(true)">
+        <div ng-if="$closed" class="my-chatbar-header my-chatbar-header--minimized" ng-click="ctrl.open(true)">
           {{chat.title}} - {{chat.contacts.join(', ')}}
-      	 <i ng-click="ctrl.remove(chat)">X</i>
-    	  </jlo-chatbar-minimized>
-        <jlo-chatbar-open>
-          <div class="my-chatbar-header">
-            {{chat.title}} - {{chat.contacts.join(', ')}}
-            <i class="minimize" ng-click="ctrl.minimize()">_</i>
-      		  <i class="close" ng-click="ctrl.remove()">X</i>
-            <jlo-chatbar-resizer></jlo-chatbar-resizer>
-          </div>
-          <div class="my-chatbar-body" style="color: {{myCtrl.getColor(chat)}};">
-            Hello World
-          </div>
-          <div class="my-chatbar-footer">
-            <input jlo-chatbar-focus="500">
-          </div>
-        </jlo-chatbar-open>
+    		  <i class="close" ng-click="ctrl.remove()">X</i>
+        </div>
+        <div ng-if="!$closed"  class="my-chatbar-header my-chatbar-header--open">
+          {{chat.title}} - {{chat.contacts.join(', ')}}
+          <i class="minimize" ng-click="ctrl.minimize()">_</i>
+    		  <i class="close" ng-click="ctrl.remove()">X</i>
+          <jlo-chatbar-resizer></jlo-chatbar-resizer>
+        </div>
+        <div ng-if="!$closed" class="my-chatbar-body" style="color: {{myCtrl.getColor(chat)}};" jlo-chatbar-scroll="autoscroll on chat.messages">
+          Hello World<br>
+          <span ng-repeat="msg in chat.messages track by $index">{{msg}}<br></span>
+        </div>
+        <div ng-if="!$closed" class="my-chatbar-footer">
+          <input ng-model="msg" jlo-chatbar-focus="500" ng-keydown="myCtrl.onMsgKey($event, chat, msg) && (msg = '')">
+        </div>
       </jlo-chatbar>
     </div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.16/require.min.js"></script>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-animate.js"></script>
     <script src="http://localhost:3000/dist/angular-chatbar.umd.js"></script>
     <script src="script.js"></script>
   </body>

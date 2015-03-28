@@ -2,7 +2,7 @@ import ngModule from './_module';
 
 ngModule.provider('jloChatbar', function () {
 	var _chatId;
-	
+
 	this.chatId = function (val) {
 		if (!angular.isFunction(val)) {
 			_chatId = function (chat) {
@@ -10,18 +10,18 @@ ngModule.provider('jloChatbar', function () {
 			};
 			return ;
 		}
-		
+
 		_chatId = val;
 	};
-	
+
 	this.chatId('id');
-		
+
 	this.$get = function ($rootScope, $timeout) {
 		var service = {
 				list: []
 			}
 		;
-		
+
 		function indexOfChat(chat) {
 			return service.list.reduce(function (res, c, index) {
 				if (res >= 0) {
@@ -33,7 +33,7 @@ ngModule.provider('jloChatbar', function () {
 				return res;
 			}, -1);
 		}
-		
+
 		service.addChat = function (chat, opened, focus) {
 			var idx = indexOfChat(chat),
 				current
@@ -57,24 +57,22 @@ ngModule.provider('jloChatbar', function () {
 				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', chat));
 			}
 		};
-		
+
 		service.focusChat = function (chat) {
-			var idx = indexOfChat(chat),
-				current
-			;
+			var idx = indexOfChat(chat);
 
 			if (idx !== -1) {
 				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', service.list[idx].data));
 			}
 		};
-		
+
 		service.removeChat = function (chat) {
 			var idx = indexOfChat(chat);
 			if (idx !== -1) {
 				service.list.splice(idx, 1);
 			}
 		};
-		
+
 		return service;
 	};
 });

@@ -1,0 +1,111 @@
+
+.jlo-chatbar {
+	right: 15px;
+	max-width: calc(100% - 100px - 15px);
+
+	/*
+	//to change position of added chat
+	direction: rtl;
+	> * {
+		direction: ltr;
+	}*/
+}
+
+.jlo-chatbar__chat,
+.my-chatbar-header {
+	border-radius: 8px 8px 0 0;
+}
+
+
+.jlo-chatbar__chat {
+	max-height: calc(100vh - 2.5em);
+
+	padding: 0;
+
+  	overflow: hidden;
+}
+.jlo-chatbar__chat:before {
+	content: none;
+}
+.jlo-chatbar__chat {
+	bottom: calc(100vh + 3em);
+}
+.jlo-chatbar__chat--open {
+	transform: translateY(3em) translateZ(0);
+}
+
+.my-chatbar-header,
+.my-chatbar-body {
+	box-sizing: border-box;
+}
+
+.my-chatbar-header {
+	position: relative;
+
+	line-height: 3em;
+	padding: 0 1.6em 0 .8em;
+	box-sizing: border-box;
+	width: 100%;
+
+	background-color: grey;
+
+	color: white;
+}
+
+.my-chatbar-header > i {
+	position: absolute;
+	font-style: normal;
+	cursor: pointer;
+	top: 1em;
+	line-height: normal;
+	width: 1em;
+	text-align: center;
+}
+.my-chatbar-header > i:hover {
+	background-color: rgba(0,0,0,0.2);
+}
+.my-chatbar-header > i.minimize {
+	right: 2.2em;
+}
+.my-chatbar-header > i.close {
+	right: 0.8em;
+}
+
+.my-chatbar-header--minimized {
+	cursor: pointer;
+}
+
+.my-chatbar-footer {
+	line-height: 2em;
+	box-sizing: border-box;
+	border: 1px solid grey;
+	border-width: 0 1px 1px 1px;
+}
+
+.my-chatbar-footer input {
+	line-height: 2em;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: none;
+	outline: none;
+	vertical-align: top;
+	padding: 0 .4em;
+	box-sizing: border-box;
+	height: 100%;
+}
+
+.my-chatbar-body {
+	line-height: normal;
+
+	height: calc(100% - 3em - 2em);
+
+	padding: 0.8em;
+
+	border: 1px solid grey;
+	border-top: none;
+
+	overflow: auto;
+
+	word-break: break-all;
+}

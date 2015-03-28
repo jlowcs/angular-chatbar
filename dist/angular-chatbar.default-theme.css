@@ -1,48 +1,33 @@
 .jlo-chatbar {
   font-size: 0.75rem;
-  position: absolute;
   right: 1.5em;
   max-width: calc(100% - 1.5em - 1.5em);
   text-align: right;
-/*this is to keep a default visual header similar to minimized*/
 }
 .jlo-chatbar__chat {
-  position: relative;
   font-size: 1.2em;
-  text-align: left;
   width: 20em; /*width of chat elt*/
   margin: 0 0.4em; /*separation of chat elt*/
-  line-height: normal;
-  overflow: hidden;
-}
-.jlo-chatbar__minimized {
-  line-height: 2.5em; /*height of chat elt*/
-  background-color: #808080;
-  padding: 0 0.8em;
-  cursor: pointer;
-  color: #fff;
-}
-.jlo-chatbar__open {
   min-height: 15em;
   height: 25em;
   max-height: 100vh;
-  background-color: #fff;
-  color: #fff;
-  border: 1px solid #808080;
-  overflow: auto;
-}
-.jlo-chatbar__resizer {
-  position: absolute;
-  top: -2px;
-  left: 0;
-  height: 4px;
-  cursor: ns-resize;
-}
-.jlo-chatbar__open {
+  bottom: calc(100vh + $chat-minimized-height);
+  -webkit-transform: translateY(100%) translateZ(0);
+  -moz-transform: translateY(100%) translateZ(0);
+  -o-transform: translateY(100%) translateZ(0);
+  -ms-transform: translateY(100%) translateZ(0);
+  transform: translateY(100%) translateZ(0);
+/*this is to keep a default visual header similar to minimized*/
   line-height: 2.5em;
-  padding: 0 calc(0.8em - 1px);
 }
-.jlo-chatbar__open:before {
+.jlo-chatbar__chat--open {
+  -webkit-transform: translateY(2.5em) translateZ(0);
+  -moz-transform: translateY(2.5em) translateZ(0);
+  -o-transform: translateY(2.5em) translateZ(0);
+  -ms-transform: translateY(2.5em) translateZ(0);
+  transform: translateY(2.5em) translateZ(0);
+}
+.jlo-chatbar__chat:before {
   content: '';
   position: absolute;
   top: 0;
@@ -51,4 +36,11 @@
   background-color: #808080;
   height: 2.5em;
   z-index: -1;
+}
+.jlo-chatbar__resizer {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  height: 4px;
+  cursor: ns-resize;
 }

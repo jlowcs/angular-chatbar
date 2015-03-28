@@ -6,43 +6,40 @@
   height: 0px;
   line-height: 100vh; /*so that hidden open panel does not show over visible chat */
   bottom: 0;
+  position: absolute;
 }
 .jlo-chatbar__chat {
   position: relative;
   bottom: 100vh;
+  text-align: left;
+  width: 20em; /*width of chat elt*/
+  margin: 0 0.5em; /*separation of chat elt*/
+  line-height: normal;
+  overflow: hidden;
+  height: 20em;
+  background-color: #fff;
   display: inline-block;
   vertical-align: bottom;
+  bottom: calc(100vh + 2.5em);
+  -webkit-transform: translateY(100%) translateZ(0);
+  -moz-transform: translateY(100%) translateZ(0);
+  -o-transform: translateY(100%) translateZ(0);
+  -ms-transform: translateY(100%) translateZ(0);
+  transform: translateY(100%) translateZ(0);
 }
-.jlo-chatbar__minimized,
-.jlo-chatbar__open {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
+.jlo-chatbar__chat--open {
+  -webkit-transform: translateY(2.5em) translateZ(0);
+  -moz-transform: translateY(2.5em) translateZ(0);
+  -o-transform: translateY(2.5em) translateZ(0);
+  -ms-transform: translateY(2.5em) translateZ(0);
+  transform: translateY(2.5em) translateZ(0);
 }
-.jlo-chatbar__minimized {
-  display: block;
-}
-.jlo-chatbar__open {
-  display: none;
-  -webkit-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  -o-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0); /*to fix a redraw issue in firefox*/
-}
-.jlo-chatbar__chat--open .jlo-chatbar__open {
-  display: block;
-}
-.jlo-chatbar__chat--open .jlo-chatbar__minimized {
-  display: none;
+.jlo-chatbar__chat:focus {
+  outline-width: 0;
 }
 .jlo-chatbar__resizer {
   width: 100%;
-  height: 0;
+  height: 2px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
