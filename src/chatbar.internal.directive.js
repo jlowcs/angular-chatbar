@@ -10,6 +10,8 @@ ngModule.directive('jloChatbarChatInternal', function ($animate, $timeout) {
 				jloChatbarCtrl = ctrls[1]
 			;
 
+			ctrl.element = $element;
+
 			if (!jloChatbarCtrl.$transclude) {
 				return ;
 			}

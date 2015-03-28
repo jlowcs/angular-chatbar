@@ -6,7 +6,7 @@ ngModule.directive('jloChatbar', function () {
 		restrict: 'AE',
 		transclude: true,
 		scope: true,
-		controller: function ($scope, $element, $attrs, $window, $transclude, jloChatbar) {
+		controller: function ($scope, $element, $attrs, $transclude, jloChatbar) {
 			$element.addClass('jlo-chatbar');
 
 			this.$transclude = $transclude;
@@ -18,22 +18,10 @@ ngModule.directive('jloChatbar', function () {
 			this.chatVarName = $attrs.chat;
 			this.ctrlVarName = $attrs.ctrl;
 
-			this.open = function (chat, focus) {
-				chat.opened = true;
-				focus && jloChatbar.focusChat(chat.data);
-			};
-
-			this.minimize = function (chat) {
-				chat.opened = false;
-			};
-
-			this.remove = function (chat) {
-				jloChatbar.removeChat(chat.data);
-			};
-
-			this.focus = function (chat) {
-				jloChatbar.focusChat(chat.data);
-			};
+			this.open = (chat, focus) => (chat.opened = true, focus && jloChatbar.focusChat(chat.data));
+			this.minimize = (chat) => chat.opened = false;
+			this.remove = (chat) => jloChatbar.removeChat(chat.data);
+			this.focus = (chat) => jloChatbar.focusChat(chat.data);
 		},
 		controllerAs: 'chatBarCtrl',
 		template: [
@@ -48,25 +36,15 @@ ngModule.directive('jloChatbarResizer', function () {
 		require: '^^jloChatbarChatInternal',
 		restrict: 'AE',
 		transclude: 'element',
-		link: function ($scope, $element) {
-			var chatElt, resizerElt
-			;
-
-			chatElt = $element;
-			do {
-				chatElt = chatElt.parent();
-			} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== 'jlo-chatbar-chat-internal');
-
-			if (!chatElt.length || chatElt[0] === document) {
-				throw new Error('jlo-chatbar-resizer must be inside jlo-chatbar-chat-internal');
-			}
+		link: function ($scope, $element, $attrs, ctrl) {
+			var resizerElt;
 
 			resizerElt = angular.element('<div class="jlo-chatbar__resizer"></div>');
 
 			$element.after(resizerElt);
 			$element.remove();
 
-			initResizer(resizerElt, chatElt);
+			initResizer(resizerElt, ctrl.element);
 		}
 	};
 });
@@ -104,47 +82,38 @@ ngModule.directive('jloChatbarScroll', function ($window) {
 
 			watchExpr = matches[1];
 
+			function updateScroll() {
+				isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
+			}
+
+			//update isBottom state when scrolled
 			$element.on('scroll', function () {
 				isBottom = this.scrollTop + this.offsetHeight >= this.scrollHeight;
 			});
 
+			//update scroll when chat is resized
 			if (ctrl) {
-				let chatElt = $element;
-				do {
-					chatElt = chatElt.parent();
-				} while (chatElt.length && chatElt[0] !== document && chatElt[0].tagName.toLowerCase() !== 'jlo-chatbar-chat-internal');
-
-				chatElt.on('jlo-chat-resize', function () {
-					isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
-				});
+				ctrl.element.on('jlo-chat-resize', updateScroll);
+				$scope.$on('$destroy', () => ctrl.element.off('jlo-chat-resize', updateScroll));
 			}
 
+			//update scroll when window is resized
 			function onResize() {
 				resizeTimeout && clearTimeout(resizeTimeout);
 				resizeTimeout = setTimeout(function () {
-					isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
+					updateScroll();
 					resizeTimeout = undefined;
 				}, 100);
 			}
-
 			angular.element($window).on('resize', onResize);
+			$scope.$on('$destroy', () => angular.element($window).off('resize', onResize));
 
-			$scope.$on('$destroy', function () {
-				angular.element($window).off('resize', onResize);
-			});
-
+			//initial update scroll
 			isBottom = true;
-
 			if (watchExpr) {
-				$scope.$watchCollection(function () {
-					return [].concat($scope.$eval(watchExpr));
-				}, function () {
-					isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
-				});
+				$scope.$watchCollection(() => [].concat($scope.$eval(watchExpr)), updateScroll);
 			} else {
-				setTimeout(function () {
-					$element[0].scrollTop = $element[0].scrollHeight;
-				});
+				setTimeout(updateScroll, 1);
 			}
 		}
 	};

@@ -1,6 +1,5 @@
 function initResizer(resizerElt, chatElt) {
-	var startY, startHeight
-	;
+	var startY, startHeight;
 
 	function doDrag(e) {
 		chatElt.css('height', (startHeight + startY - e.clientY) + 'px');
