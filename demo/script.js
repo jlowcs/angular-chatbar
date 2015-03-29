@@ -3,9 +3,10 @@ define('app', ['angular-chatbar'], function () {
 	.config(function (jloChatbarProvider) {
 		jloChatbarProvider.chatId('_id');
 	})
-	.controller('MyCtrl', function ($element, jloChatbar) {
+	.controller('MyCtrl', function ($scope, $element, jloChatbar) {
 		var NAMES = ['John', 'Roger', 'Bob', 'Jim', 'Susan', 'Alice', 'Marie'],
-			chat, i, j, len
+			chat, i, j, len,
+			css = {}, cssElt
 		;
 
 		this.chatList = [];
@@ -67,11 +68,33 @@ define('app', ['angular-chatbar'], function () {
 			}
 		});
 
-		/*setTimeout(function () {
-			$element.find('.my-chatbar-body').on('scroll', function () {
-				console.log('in');
-			});
-		}, 1000)*/
+		for (i = 0; i < document.styleSheets.length; i++) {
+			cssElt = document.styleSheets.item(i);
+			if (!cssElt.href) {
+				continue;
+			}
+			if (cssElt.href.indexOf('angular-chatbar.default-animations') !== -1) {
+				css.anims = cssElt;
+				continue;
+			}
+			if (cssElt.href.indexOf('angular-chatbar.default-theme') !== -1) {
+				css.defaultTheme = cssElt;
+				continue;
+			}
+			if (cssElt.href.indexOf('chatbar.css') !== -1) {
+				css.customTheme = cssElt;
+				continue;
+			}
+		}
+
+		this.cssAnimations = true;
+		this.cssTheme = 'custom';
+
+		$scope.$watch('myCtrl.cssAnimations', function (value) { css.anims.disabled = !value; });
+		$scope.$watch('myCtrl.cssTheme', function (value) {
+			css[value + 'Theme'].disabled = false;
+			css[(value === 'custom' ? 'default' : 'custom') + 'Theme'].disabled = true;
+		});
 	});
 });
 

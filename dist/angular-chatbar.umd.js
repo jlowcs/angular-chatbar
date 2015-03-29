@@ -1,5 +1,14 @@
 (function (factory) {
   if (typeof define === "function" && define.amd) {
+    define("angular-chatbar", ["exports", "angular-chatbar/chatbar"], factory);
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require("angular-chatbar/chatbar"));
+  }
+})(function (exports, _angularChatbarChatbar) {
+  "use strict";
+});
+(function (factory) {
+  if (typeof define === "function" && define.amd) {
     define("angular-chatbar/_module", ["exports"], factory);
   } else if (typeof exports !== "undefined") {
     factory(exports);
@@ -8,15 +17,6 @@
   "use strict";
 
   exports["default"] = angular.module("jlo-chatbar", []);
-});
-(function (factory) {
-  if (typeof define === "function" && define.amd) {
-    define("angular-chatbar", ["exports", "angular-chatbar/chatbar"], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require("angular-chatbar/chatbar"));
-  }
-})(function (exports, _angularChatbarChatbar) {
-  "use strict";
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
@@ -36,7 +36,15 @@
 			transclude: true,
 			scope: true,
 			controller: function controller($scope, $element, $attrs, $transclude, jloChatbar) {
+				var expr = $attrs.jloChatbar || $attrs.chatData,
+				    matches;
+
 				$element.addClass("jlo-chatbar");
+
+				matches = expr.match(/^\s*(.+?)(?:\s+controlled\s+by\s+(.+))?\s*$/);
+
+				this.chatVarName = matches[1];
+				this.ctrlVarName = matches[2];
 
 				this.$transclude = $transclude;
 
@@ -44,14 +52,11 @@
 
 				this.chatList = jloChatbar.list;
 
-				this.chatVarName = $attrs.chat;
-				this.ctrlVarName = $attrs.ctrl;
-
 				this.open = function (chat, focus) {
-					return (chat.opened = true, focus && jloChatbar.focusChat(chat.data));
+					return (chat.open = true, focus && jloChatbar.focusChat(chat.data));
 				};
 				this.minimize = function (chat) {
-					return chat.opened = false;
+					return chat.open = false;
 				};
 				this.remove = function (chat) {
 					return jloChatbar.removeChat(chat.data);
@@ -94,6 +99,7 @@
 						setTimeout(function () {
 							$element[0].focus();
 							$window.scrollTo(0, 0); //because focus moves out of viewport
+							ctrl.element[0].scrollTop = 0;
 						}, $attrs.jloChatbarFocus && parseInt($attrs.jloChatbarFocus, 10) || 1);
 					}
 				});
@@ -209,22 +215,28 @@
 
 				$scope.$watch("chat", function (value) {
 					ctrl.chat = value;
-					scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data;
+					jloChatbarCtrl.chatVarName && (scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data);
 				});
 
-				$scope.$watch("chat.opened", function (value) {
+				$scope.$watch("chat.open", function (value, oldValue) {
 					scope.$closed = false;
-					scope.$opened = false;
+					scope.$open = false;
 
-					//to allow ng-move to be done before animating the opening
-					$timeout(function () {
-						$element.toggleClass("jlo-chatbar__chat--minimized", !value);
+					function toggle() {
+						$element.toggleClass("jlo-chatbar__chat--closed", !value);
 						$animate[!!value ? "addClass" : "removeClass"]($element, "jlo-chatbar__chat--open").then(function () {
 							return scope.$apply(function () {
-								return (scope.$closed = !value, scope.$opened = !!value);
+								return (scope.$closed = !value, scope.$open = !!value);
 							});
 						});
-					}, 1);
+					}
+
+					if (typeof oldValue !== "undefined" && value !== oldValue) {
+						//to allow ng-move to be done before animating the opening
+						$timeout(toggle, 1);
+					} else {
+						toggle();
+					}
 				});
 
 				jloChatbarCtrl.$transclude(scope, function (clone) {
@@ -287,7 +299,7 @@
 				}, -1);
 			}
 
-			service.addChat = function (chat, opened, focus) {
+			service.addChat = function (chat, open, focus) {
 				var idx = indexOfChat(chat),
 				    current;
 
@@ -295,11 +307,11 @@
 					current = service.list.splice(idx, 1)[0];
 				}
 
-				opened = current && current.opened || !!opened;
+				open = current && current.open || !!open;
 
 				service.list.unshift(Object.defineProperties({
 					data: chat,
-					opened: opened
+					open: open
 				}, {
 					id: {
 						get: function () {
@@ -310,7 +322,7 @@
 					}
 				}));
 
-				if (opened && focus) {
+				if (open && focus) {
 					$timeout(function () {
 						return $rootScope.$broadcast("jlo.chatbar.focus", chat);
 					});

@@ -34,22 +34,29 @@ ngModule.directive('jloChatbarChatInternal', function ($animate, $timeout) {
 
 			$scope.$watch('chat', function (value) {
 				ctrl.chat = value;
-				scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data;
+				jloChatbarCtrl.chatVarName && (scope[jloChatbarCtrl.chatVarName] = ctrl.chat.data);
 			});
 
-			$scope.$watch('chat.opened', function (value) {
+			$scope.$watch('chat.open', function (value, oldValue) {
 				scope.$closed = false;
-				scope.$opened = false;
+				scope.$open = false;
 
-				//to allow ng-move to be done before animating the opening
-				$timeout(function () {
-					$element.toggleClass('jlo-chatbar__chat--minimized', !value);
+				function toggle() {
+					$element.toggleClass('jlo-chatbar__chat--closed', !value);
 					$animate[!!value ? 'addClass' : 'removeClass']($element, 'jlo-chatbar__chat--open')
 					.then(() => scope.$apply(() => (
 						scope.$closed = !value,
-						scope.$opened = !!value
+						scope.$open = !!value
 					)));
-				}, 1);
+				}
+
+				if (typeof oldValue !== 'undefined' && (value !== oldValue)) {
+					//to allow ng-move to be done before animating the opening
+					$timeout(toggle, 1);
+				} else {
+					toggle();
+				}
+
 			});
 
 			jloChatbarCtrl.$transclude(scope, (clone) => $animate.enter(clone, $element));

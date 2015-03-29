@@ -7,7 +7,16 @@ ngModule.directive('jloChatbar', function () {
 		transclude: true,
 		scope: true,
 		controller: function ($scope, $element, $attrs, $transclude, jloChatbar) {
+			var expr = $attrs.jloChatbar || $attrs.chatData,
+				matches
+			;
+
 			$element.addClass('jlo-chatbar');
+
+			matches = expr.match(/^\s*(.+?)(?:\s+controlled\s+by\s+(.+))?\s*$/);
+
+			this.chatVarName = matches[1];
+			this.ctrlVarName = matches[2];
 
 			this.$transclude = $transclude;
 
@@ -15,11 +24,8 @@ ngModule.directive('jloChatbar', function () {
 
 			this.chatList = jloChatbar.list;
 
-			this.chatVarName = $attrs.chat;
-			this.ctrlVarName = $attrs.ctrl;
-
-			this.open = (chat, focus) => (chat.opened = true, focus && jloChatbar.focusChat(chat.data));
-			this.minimize = (chat) => chat.opened = false;
+			this.open = (chat, focus) => (chat.open = true, focus && jloChatbar.focusChat(chat.data));
+			this.minimize = (chat) => chat.open = false;
 			this.remove = (chat) => jloChatbar.removeChat(chat.data);
 			this.focus = (chat) => jloChatbar.focusChat(chat.data);
 		},
@@ -59,6 +65,7 @@ ngModule.directive('jloChatbarFocus', function ($q, $window) {
 					setTimeout(function () {
 						$element[0].focus();
 						$window.scrollTo(0, 0); //because focus moves out of viewport
+						ctrl.element[0].scrollTop = 0;
 					}, $attrs.jloChatbarFocus && parseInt($attrs.jloChatbarFocus, 10) || 1);
 				}
 			});

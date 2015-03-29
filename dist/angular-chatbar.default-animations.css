@@ -39,28 +39,28 @@
   -ms-animation-direction: reverse;
   animation-direction: reverse;
 }
-.jlo-chatbar__chat--minimized.ng-leave {
+.jlo-chatbar__chat--closed.ng-leave {
   -webkit-transition: opacity 100ms linear;
   -moz-transition: opacity 100ms linear;
   -o-transition: opacity 100ms linear;
   -ms-transition: opacity 100ms linear;
   transition: opacity 100ms linear;
 }
-.jlo-chatbar__chat--minimized.ng-enter {
+.jlo-chatbar__chat--closed.ng-enter {
   -webkit-transition: opacity 100ms linear 100ms;
   -moz-transition: opacity 100ms linear 100ms;
   -o-transition: opacity 100ms linear 100ms;
   -ms-transition: opacity 100ms linear 100ms;
   transition: opacity 100ms linear 100ms;
 }
-.jlo-chatbar__chat--minimized.ng-enter:not(.ng-enter-active),
-.jlo-chatbar__chat--minimized.ng-leave.ng-leave-active {
+.jlo-chatbar__chat--closed.ng-enter:not(.ng-enter-active),
+.jlo-chatbar__chat--closed.ng-leave.ng-leave-active {
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: alpha(opacity=0);
 }
-.jlo-chatbar__chat--minimized.ng-enter.ng-enter-active,
-.jlo-chatbar__chat--minimized.ng-leave:not(.ng-leave-active) {
+.jlo-chatbar__chat--closed.ng-enter.ng-enter-active,
+.jlo-chatbar__chat--closed.ng-leave:not(.ng-leave-active) {
   opacity: 1;
   -ms-filter: none;
   filter: none;

@@ -1,4 +1,4 @@
-@require './chatbar.default-theme.animations.vars';
+@require './chatbar.default-animations.vars';
 @require 'nib';
 
 @keyframes jlo-chatbar-open-leave-animation {
@@ -43,7 +43,7 @@
 		}
 	}
 
-	&--minimized {
+	&--closed {
 		&.ng-leave {
 			transition: opacity $enter-leave-animation-time linear;
 		}

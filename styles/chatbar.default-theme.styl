@@ -2,17 +2,14 @@
 @require 'nib';
 
 .jlo-chatbar {
-	font-size: 0.75rem;
 	right: $chatbar-sides-margin;
 	max-width: "calc(100% - %s - %s)" % ($chatbar-sides-margin $chatbar-sides-margin);
 	text-align: right;
 
 	&__chat {
-		font-size: $chat-font-size;
 		width: $chat-width; /*width of chat elt*/
 		margin: 0 $chat-sides-margin; /*separation of chat elt*/
-		
-		
+				
 		min-height: $chat-open-min-height;
 		height: $chat-open-height;
 		max-height: $chat-open-max-height;
@@ -39,11 +36,8 @@
 	}
 
 	&__resizer {
-		position: absolute;
 		top: - ($chat-resizer-height / 2);
-		left: 0;
 		height: $chat-resizer-height;
-		cursor: ns-resize;
 	}
 }
 

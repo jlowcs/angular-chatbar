@@ -58,7 +58,7 @@ function compileCss(name, devOnly) {
 function compileAllCss(devOnly) {
 	var streams = [];
 
-	['chatbar', 'chatbar.default-theme', 'chatbar.default-theme.animations'].forEach(function (name) {
+	['chatbar', 'chatbar.default-theme', 'chatbar.default-animations'].forEach(function (name) {
 		streams.push(compileCss(name, devOnly));
 	});
 

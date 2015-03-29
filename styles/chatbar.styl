@@ -1,6 +1,7 @@
 @require 'nib';
 
 .jlo-chatbar {
+	font-size: 1rem;
 	display: inline-block;
 	box-sizing: border-box;
 	height: 0px;
@@ -12,12 +13,14 @@
 		position: relative;
 		bottom: 100vh;
 		text-align: left;
-		width: 20em; /*width of chat elt*/
+		width: 16em; /*width of chat elt*/
 		margin: 0 .5em; /*separation of chat elt*/
 		line-height: normal;
 		overflow: hidden;
 
+		min-height: 5em;
 		height: 20em;
+		max-height: 100vh;
 
 		background-color: white;
 
@@ -37,8 +40,12 @@
 	}
 
 	&__resizer {
+		position: absolute;
+		top: - (4px / 2);
+		left: 0;
+		height: 4px;
+		cursor: ns-resize;
 		width: 100%;
-		height: 2px;
 		box-sizing: border-box;
 	}
 

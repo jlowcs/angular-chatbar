@@ -1,12 +1,10 @@
 .jlo-chatbar {
-  font-size: 0.75rem;
   right: 1.5em;
   max-width: calc(100% - 1.5em - 1.5em);
   text-align: right;
 }
 .jlo-chatbar__chat {
-  font-size: 1.2em;
-  width: 20em; /*width of chat elt*/
+  width: 16em; /*width of chat elt*/
   margin: 0 0.4em; /*separation of chat elt*/
   min-height: 15em;
   height: 25em;
@@ -38,9 +36,6 @@
   z-index: -1;
 }
 .jlo-chatbar__resizer {
-  position: absolute;
   top: -2px;
-  left: 0;
   height: 4px;
-  cursor: ns-resize;
 }

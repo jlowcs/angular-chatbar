@@ -4,17 +4,26 @@
   <head>
     <link rel="stylesheet" href="http://localhost:3000/dist/angular-chatbar.css">
     <link rel="stylesheet" href="http://localhost:3000/dist/angular-chatbar.default-theme.css">
-    <link rel="stylesheet" href="http://localhost:3000/dist/angular-chatbar.default-theme.animations.css">
+    <link rel="stylesheet" href="http://localhost:3000/dist/angular-chatbar.default-animations.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="chatbar.css">
   </head>
 
   <body>
     <div class="main" ng-controller="MyCtrl as myCtrl">
-      <button ng-repeat="chat in myCtrl.chatList" ng-click="myCtrl.openChat(chat)">open {{chat.title}}</button>
+    	<div class="buttons">
+      	<button ng-repeat="chat in myCtrl.chatList" ng-click="myCtrl.openChat(chat)">open {{chat.title}}</button>
+      </div>
+    	<div class="config">
+    		<div>Theme:
+    			<label><input type="radio" value="default" ng-model="myCtrl.cssTheme">Default Theme</label>
+    			<label><input type="radio" value="custom" ng-model="myCtrl.cssTheme">Custom Theme</label>
+    		</div>
+    		<div><label><input type="checkbox" ng-model="myCtrl.cssAnimations">Animations</label></div>
+    	</div>
 
-      <jlo-chatbar chat="chat" ctrl="ctrl">
-        <div ng-if="$closed" class="my-chatbar-header my-chatbar-header--minimized" ng-click="ctrl.open(true)">
+      <jlo-chatbar chat-data="chat controlled by ctrl">
+        <div ng-if="$closed" class="my-chatbar-header my-chatbar-header--closed" ng-click="ctrl.open(true)">
           {{chat.title}} - {{chat.contacts.join(', ')}}
     		  <i class="close" ng-click="ctrl.remove()">X</i>
         </div>

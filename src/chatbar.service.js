@@ -34,7 +34,7 @@ ngModule.provider('jloChatbar', function () {
 			}, -1);
 		}
 
-		service.addChat = function (chat, opened, focus) {
+		service.addChat = function (chat, open, focus) {
 			var idx = indexOfChat(chat),
 				current
 			;
@@ -43,17 +43,17 @@ ngModule.provider('jloChatbar', function () {
 				current = service.list.splice(idx, 1)[0];
 			}
 
-			opened = current && current.opened || !!opened;
+			open = current && current.open || !!open;
 
 			service.list.unshift({
 				get id() {
 					return _chatId(this.data);
 				},
 				data: chat,
-				opened: opened
+				open: open
 			});
 
-			if (opened && focus) {
+			if (open && focus) {
 				$timeout(() => $rootScope.$broadcast('jlo.chatbar.focus', chat));
 			}
 		};
