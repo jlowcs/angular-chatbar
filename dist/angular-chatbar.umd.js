@@ -127,7 +127,12 @@
 				watchExpr = matches[1];
 
 				function updateScroll() {
-					isBottom && ($element[0].scrollTop = $element[0].scrollHeight);
+					if (isBottom) {
+						$element[0].scrollTop = $element[0].scrollHeight;
+						setTimeout(function () {
+							$element[0].scrollTop = $element[0].scrollHeight;
+						}, 1);
+					}
 				}
 
 				//update isBottom state when scrolled
