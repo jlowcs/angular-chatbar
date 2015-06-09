@@ -9,7 +9,7 @@
   min-height: 15em;
   height: 25em;
   max-height: 100vh;
-  bottom: calc(100vh + $chat-minimized-height);
+  bottom: calc(100vh + 2.5em);
   -webkit-transform: translateY(100%) translateZ(0);
   -moz-transform: translateY(100%) translateZ(0);
   -o-transform: translateY(100%) translateZ(0);

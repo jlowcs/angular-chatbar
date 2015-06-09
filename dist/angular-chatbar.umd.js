@@ -1,14 +1,5 @@
 (function (factory) {
   if (typeof define === "function" && define.amd) {
-    define("angular-chatbar", ["exports", "angular-chatbar/chatbar"], factory);
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require("angular-chatbar/chatbar"));
-  }
-})(function (exports, _angularChatbarChatbar) {
-  "use strict";
-});
-(function (factory) {
-  if (typeof define === "function" && define.amd) {
     define("angular-chatbar/_module", ["exports"], factory);
   } else if (typeof exports !== "undefined") {
     factory(exports);
@@ -17,6 +8,15 @@
   "use strict";
 
   exports["default"] = angular.module("jlo-chatbar", []);
+});
+(function (factory) {
+  if (typeof define === "function" && define.amd) {
+    define("angular-chatbar", ["exports", "angular-chatbar/chatbar"], factory);
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require("angular-chatbar/chatbar"));
+  }
+})(function (exports, _angularChatbarChatbar) {
+  "use strict";
 });
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
@@ -38,6 +38,10 @@
 			controller: function controller($scope, $element, $attrs, $transclude, jloChatbar) {
 				var expr = $attrs.jloChatbar || $attrs.chatData,
 				    matches;
+
+				if (!expr) {
+					throw new Error("Missing chat-data attribute");
+				}
 
 				$element.addClass("jlo-chatbar");
 
@@ -307,7 +311,11 @@
 					current = service.list.splice(idx, 1)[0];
 				}
 
-				open = current && current.open || !!open;
+				if (typeof open === "boolean") {
+					open = open;
+				} else {
+					open = current && current.open || false;
+				}
 
 				service.list.unshift(Object.defineProperties({
 					data: chat,
