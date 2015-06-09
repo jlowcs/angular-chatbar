@@ -95,10 +95,10 @@
 
 	ngModule.directive("jloChatbarFocus", function ($q, $window) {
 		return {
-			require: "^^jloChatbarChatInternal",
+			require: "^^?jloChatbarChatInternal",
 			restrict: "AE",
 			link: function link($scope, $element, $attrs, ctrl) {
-				$scope.$on("jlo.chatbar.focus", function (event, chat) {
+				ctrl && $scope.$on("jlo.chatbar.focus", function (event, chat) {
 					if (chat === ctrl.chat.data) {
 						setTimeout(function () {
 							$element[0].focus();
