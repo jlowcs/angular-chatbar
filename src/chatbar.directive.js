@@ -11,6 +11,10 @@ ngModule.directive('jloChatbar', function () {
 				matches
 			;
 
+			if (!expr) {
+				throw new Error('Missing chat-data attribute');
+			}
+
 			$element.addClass('jlo-chatbar');
 
 			matches = expr.match(/^\s*(.+?)(?:\s+controlled\s+by\s+(.+))?\s*$/);

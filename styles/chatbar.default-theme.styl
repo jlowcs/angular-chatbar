@@ -9,18 +9,18 @@
 	&__chat {
 		width: $chat-width; /*width of chat elt*/
 		margin: 0 $chat-sides-margin; /*separation of chat elt*/
-				
+
 		min-height: $chat-open-min-height;
 		height: $chat-open-height;
 		max-height: $chat-open-max-height;
-		
-		bottom: calc(100vh + $chat-minimized-height);
+
+		bottom: 'calc(100vh + %s)' % $chat-minimized-height;
 		transform: translateY(100%) translateZ(0); //z=0 to fix a redraw issue in firefox & chrome
-		
+
 		&--open {
 			transform: translateY($chat-minimized-height) translateZ(0); //z=0 to fix a redraw issue in firefox & chrome
 		}
-		
+
 		/*this is to keep a default visual header similar to minimized*/
 		line-height: $chat-minimized-height;
 		&:before {

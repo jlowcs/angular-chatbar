@@ -43,7 +43,11 @@ ngModule.provider('jloChatbar', function () {
 				current = service.list.splice(idx, 1)[0];
 			}
 
-			open = current && current.open || !!open;
+			if (typeof open === 'boolean') {
+				open = open;
+			} else {
+				open = current && current.open || false;
+			}
 
 			service.list.unshift({
 				get id() {
