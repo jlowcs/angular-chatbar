@@ -297,11 +297,13 @@
 			};
 
 			function indexOfChat(chat) {
+				var id = _chatId(chat);
+
 				return service.list.reduce(function (res, c, index) {
 					if (res >= 0) {
 						return res;
 					}
-					if (c.data === chat) {
+					if (c.id === id) {
 						return index;
 					}
 					return res;
