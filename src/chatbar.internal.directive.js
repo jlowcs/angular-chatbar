@@ -44,10 +44,10 @@ ngModule.directive('jloChatbarChatInternal', function ($animate, $timeout) {
 				function toggle() {
 					$element.toggleClass('jlo-chatbar__chat--closed', !value);
 					$animate[!!value ? 'addClass' : 'removeClass']($element, 'jlo-chatbar__chat--open')
-					.then(() => scope.$apply(() => (
+					.then(() => (
 						scope.$closed = !value,
 						scope.$open = !!value
-					)));
+					));
 				}
 
 				if (typeof oldValue !== 'undefined' && (value !== oldValue)) {

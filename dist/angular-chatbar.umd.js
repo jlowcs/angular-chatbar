@@ -234,9 +234,7 @@
 					function toggle() {
 						$element.toggleClass("jlo-chatbar__chat--closed", !value);
 						$animate[!!value ? "addClass" : "removeClass"]($element, "jlo-chatbar__chat--open").then(function () {
-							return scope.$apply(function () {
-								return (scope.$closed = !value, scope.$open = !!value);
-							});
+							return (scope.$closed = !value, scope.$open = !!value);
 						});
 					}
 

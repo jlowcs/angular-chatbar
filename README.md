@@ -1,5 +1,5 @@
 # angular-chatbar
-Customizable gmail-like chatbar (layout only) for angular
+Customizable gmail-like chatbar (layout only) for angular 1.4+
 
 # Demo
 
