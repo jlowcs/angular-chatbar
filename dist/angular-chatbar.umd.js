@@ -130,7 +130,12 @@
 					if (isBottom) {
 						$element[0].scrollTop = $element[0].scrollHeight;
 						setTimeout(function () {
+							//for after digest is finished
 							$element[0].scrollTop = $element[0].scrollHeight;
+							setTimeout(function () {
+								//for after rendering is finished
+								$element[0].scrollTop = $element[0].scrollHeight;
+							}, 1);
 						}, 1);
 					}
 				}
