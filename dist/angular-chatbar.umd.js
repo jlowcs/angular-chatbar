@@ -142,7 +142,8 @@
 
 				//update isBottom state when scrolled
 				$element.on("scroll", function () {
-					isBottom = this.scrollTop + this.offsetHeight >= this.scrollHeight;
+					//2px error margin just to be sure for when the browser is not rounding up perfectly
+					isBottom = this.scrollTop + this.offsetHeight >= this.scrollHeight - 2;
 				});
 
 				//update scroll when chat is resized
